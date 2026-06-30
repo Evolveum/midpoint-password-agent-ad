@@ -133,7 +133,7 @@ Use the following parameters during installation:
 
 - MidPoint URL: `http://192.168.56.1:8080/midpoint`
 - Username: `ad-pwd-sync`
-- Password: `password`
+- Password: `T0pS3cr3t!`
 - Resource OID: `baaad572-97d0-491e-9b4a-024633533778`
 
 === Testing the Password Change
