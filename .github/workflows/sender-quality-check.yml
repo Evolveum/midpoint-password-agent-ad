@@ -1,0 +1,43 @@
+name: Sender Quality Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'sender/**'
+      - 'sender.Tests/**'
+      - '.github/workflows/sender-quality-check.yml'
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install just
+        uses: extractions/setup-just@v3
+        with:
+          just-version: 1.46.0
+
+      - name: Run publish
+        run: just sender-publish
+
+  test:
+    name: Tests
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install just
+        uses: extractions/setup-just@v3
+        with:
+          just-version: 1.46.0
+
+      - name: Run tests
+        run: just sender-test

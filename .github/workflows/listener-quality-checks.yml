@@ -1,0 +1,81 @@
+name: Listener Quality Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'listener/**'
+      - '.github/workflows/listener-quality-checks.yml'
+      - '.github/actions/listener-preparation/**'
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Preparation of listener environment
+        uses: ./.github/actions/listener-preparation
+
+      - name: Run build
+        run: just listener-build
+
+  lint:
+    name: Lint
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Preparation of listener environment
+        uses: ./.github/actions/listener-preparation
+
+      # Ninja is used (not Visual Studio) because it supports
+      # CMAKE_EXPORT_COMPILE_COMMANDS, which cpp-linter needs to resolve
+      # include paths and preprocessor definitions correctly.
+      - name: Generate compile_commands.json
+        shell: pwsh
+        run: |
+          $spdlogInclude = "${{ github.workspace }}/vcpkg_installed/x64-windows/include" -replace '\\', '/'
+          cmake -B listener/build-lint -S listener -G "Ninja" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
+            "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            "-DVCPKG_INSTALLED_DIR=${{ github.workspace }}/vcpkg_installed" `
+            "-DCMAKE_CXX_FLAGS=/I $spdlogInclude"
+
+      - name: Run cpp-linter
+        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: ''
+          tidy-checks: ''
+          database: listener/build-lint
+          ignore: ".github|listener/build-lint|vcpkg_installed"
+          extensions: 'cpp'
+          extra-args: '--driver-mode=cl --target=x86_64-pc-windows-msvc /std:c++17'
+          files-changed-only: false
+          step-summary: true
+
+      - name: Fail on clang-tidy checks
+        if: steps.linter.outputs.clang-tidy-checks-failed > 0
+        run: exit 1
+
+  test:
+    name: Tests
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Preparation of listener environment
+        uses: ./.github/actions/listener-preparation
+
+      - name: Run tests
+        run: just listener-test

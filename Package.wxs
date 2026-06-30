@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="MidPoint Password Agent for Active Directory"
+           Manufacturer="Evolveum"
+           Version="1.0.0"
+           UpgradeCode="1409F233-A94A-4892-8DA5-50C03C5FB8F6"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Reads the previously installed version from the registry for display in the upgrade dialog -->
+    <Property Id="EXISTING_VERSION">
+      <RegistrySearch Id="ExistingVersionSearch" Root="HKLM"
+                      Key="SOFTWARE\Evolveum\MidPointPasswordAgent" Name="Version" Type="raw" />
+    </Property>
+
+    <!-- MidPoint connection properties — settable from the UI dialog or via command line -->
+    <Property Id="MIDPOINT_URL" Value="https://" />
+    <Property Id="MIDPOINT_USERNAME" Secure="yes" />
+    <Property Id="MIDPOINT_RESOURCE_OID" Secure="yes" />
+    <Property Id="MIDPOINT_PASSWORD" Secure="yes"  Hidden="yes" />
+    <Property Id="StorePassword" Hidden="yes" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="APPROOTDIR" />
+
+    <!--
+      Custom dialog: MidPoint connection details.
+      Inserted between InstallDirDlg and VerifyReadyDlg in the WixUI_InstallDir wizard.
+    -->
+    <UI>
+      <Dialog Id="MidPointConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44"
+                 TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15"
+                 Transparent="yes" NoPrefix="yes">
+          <Text Value="{\WixUI_Font_Title}MidPoint Configuration" />
+        </Control>
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15"
+                 Transparent="yes" NoPrefix="yes">
+          <Text Value="Enter the MidPoint server connection details." />
+        </Control>
+
+        <Control Id="UrlLabel" Type="Text" X="20" Y="58" Width="330" Height="12" NoPrefix="yes">
+          <Text Value="MidPoint URL:" />
+        </Control>
+        <Control Id="UrlEdit" Type="Edit" X="20" Y="72" Width="330" Height="18"
+                 Property="MIDPOINT_URL" Text="{200}"
+                 ToolTip="Base URL of your MidPoint server, e.g. http://192.168.1.10:8080/midpoint" />
+
+        <Control Id="UsernameLabel" Type="Text" X="20" Y="100" Width="330" Height="12" NoPrefix="yes">
+          <Text Value="Username:" />
+        </Control>
+        <Control Id="UsernameEdit" Type="Edit" X="20" Y="114" Width="330" Height="18"
+                 Property="MIDPOINT_USERNAME" Text="{100}"
+                 ToolTip="MidPoint administrator username used to authenticate password change notifications" />
+
+       <Control Id="PasswordLabel" Type="Text" X="20" Y="142" Width="330" Height="12" NoPrefix="yes">
+          <Text Value="Password:" />
+        </Control>
+        <Control Id="PasswordEdit" Type="Edit" X="20" Y="156" Width="330" Height="18"
+                 Property="MIDPOINT_PASSWORD" Text="{100}" Password="yes"
+                 ToolTip="Password for the MidPoint user above" />
+
+        <Control Id="ResourceOidLabel" Type="Text" X="20" Y="184" Width="330" Height="12" NoPrefix="yes">
+          <Text Value="Resource OID:" />
+        </Control>
+        <Control Id="ResourceOidEdit" Type="Edit" X="20" Y="198" Width="330" Height="18"
+                 Property="MIDPOINT_RESOURCE_OID" Text="{100}"
+                 ToolTip="OID of the Active Directory resource object in MidPoint (found in MidPoint under Resources)" />
+
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="InstallDirDlg" Condition="1" />
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17"
+                 Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg"
+                   Condition="MIDPOINT_URL AND MIDPOINT_USERNAME AND MIDPOINT_RESOURCE_OID" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17"
+                 Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg" Condition="1" />
+        </Control>
+      </Dialog>
+
+      <!-- Route InstallDirDlg Next → MidPointConfigDlg (high order so it fires last and overrides the default VerifyReadyDlg route) -->
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog"
+               Value="MidPointConfigDlg" Order="10" Condition="1" />
+
+      <!-- Route VerifyReadyDlg Back → MidPointConfigDlg for fresh install, WelcomeDlg for upgrade -->
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog"
+               Value="MidPointConfigDlg" Order="10" Condition="NOT Installed AND NOT WIX_UPGRADE_DETECTED" />
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog"
+               Value="WelcomeDlg" Order="20" Condition="WIX_UPGRADE_DETECTED" />
+
+      <!-- During upgrade show a dedicated upgrade dialog instead of going through install dialogs -->
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog"
+               Value="UpgradeDlg" Order="20" Condition="WIX_UPGRADE_DETECTED" />
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog"
+               Value="UpgradeDlg" Order="25" Condition="WIX_UPGRADE_DETECTED" />
+
+      <Dialog Id="UpgradeDlg" Width="370" Height="270" Title="[ProductName] Setup">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44"
+                 TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15"
+                 Transparent="yes" NoPrefix="yes">
+          <Text Value="{\WixUI_Font_Title}Upgrade MidPoint Password Agent" />
+        </Control>
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15"
+                 Transparent="yes" NoPrefix="yes">
+          <Text Value="A previous version is already installed." />
+        </Control>
+        <Control Id="VersionText" Type="Text" X="20" Y="65" Width="330" Height="20" NoPrefix="yes">
+          <Text Value="Upgrading from version [EXISTING_VERSION] to [ProductVersion]." />
+        </Control>
+        <Control Id="InfoText" Type="Text" X="20" Y="95" Width="330" Height="40" NoPrefix="yes">
+          <Text Value="Click Next to upgrade. Your existing configuration, encryption keys and data directory will be preserved." />
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="WelcomeDlg" Condition="1" />
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17"
+                 Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg" Condition="1" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17"
+                 Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg" Condition="1" />
+        </Control>
+      </Dialog>
+    </UI>
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="APPROOTDIR" Name="MidPoint Password Agent for Active Directory">
+        <Component Id="AppRootDirPermission" Guid="B4F2A1E7-6C3D-4E8F-9A0B-2D5C7E1F3A9D">
+          <CreateFolder>
+            <util:PermissionEx User="NT SERVICE\MidPointPasswordAgentSender"
+                               GenericAll="yes" />
+          </CreateFolder>
+        </Component>
+        <Directory Id="LogsDir" Name="Logs">
+          <Component Id="LogsDirPermission" Guid="0DBD98AA-BF8C-4D70-86EC-879D28193499">
+            <CreateFolder>
+              <util:PermissionEx User="NT AUTHORITY\SYSTEM" GenericRead="yes" GenericWrite="yes" Delete="yes" />
+              <util:PermissionEx User="NT SERVICE\MidPointPasswordAgentSender" GenericRead="yes" GenericWrite="yes" Delete="yes" />
+              <util:PermissionEx User="MidPoint Password Agent Managers" GenericRead="yes" GenericWrite="yes" />
+              <util:PermissionEx User="Administrators" GenericRead="yes" Synchronize="yes" />
+            </CreateFolder>
+          </Component>
+        </Directory>
+        <Directory Id="DataDir" Name="Data">
+          <Component Id="DataDirPermission" Guid="27CC2483-453B-495E-A5FF-E1352D6FE704">
+            <CreateFolder />
+          </Component>
+        </Directory>
+        <Directory Id="ConfigDir" Name="Config">
+          <Component Id="ConfigDirPermission" Guid="870D427D-3FBB-4CAF-81AF-B15AD7A1547B">
+            <CreateFolder />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!--
+      Step 1 + 3: Copy MidPointPasswordAgentListener.dll to System32 and register the Event Log source.
+      The DLL name (without extension) is what LSA reads from the registry.
+    -->
+    <StandardDirectory Id="System64Folder">
+      <Component Id="LsaDll" Guid="3282663D-06ED-4925-AA51-49A564A24100" Bitness="always64">
+        <File Id="MidPointPasswordAgentListenerDll"
+              Source="listener\build\Release\MidPointPasswordAgentListener.dll"
+              Name="MidPointPasswordAgentListener.dll" />
+        <util:EventSource Log="Application"
+                          Name="MidPointPasswordAgentListener"
+                          EventMessageFile="[System64Folder]MidPointPasswordAgentListener.dll" />
+      </Component>
+    </StandardDirectory>
+
+    <!-- Step 4 + 5: Install sender.exe and register it as an auto-start Windows service. -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="EvolveuemDir" Name="Evolveum">
+        <Directory Id="MidPointPasswordAgentDir" Name="MidPoint Password Agent for Active Directory">
+          <Component Id="PasswordPs" Guid="A7F2B8C3-D4E5-4F6A-B7C8-D9E0F1A2B3C5">
+            <File Id="AdPasswordPs"
+                  Source="scripts\updateMidpointPassword.ps1"
+                  Name="updateMidpointPassword.ps1" />
+          </Component>
+
+          <Component Id="SenderService" Guid="20483FE7-85F8-4842-842A-AB3224AB0CF2" Bitness="always64">
+            <File Id="SenderExe"
+                  Source="sender\bin\Release\net10.0\win-x64\publish\sender.exe"
+                  Name="sender.exe" />
+            <ServiceInstall Id="MidPointPasswordAgentSenderInstall"
+                           Name="MidPointPasswordAgentSender"
+                           DisplayName="MidPoint Password Agent for Active Directory Sender"
+                           Description="Sends AD password change events to midPoint"
+                           Start="auto"
+                           Type="ownProcess"
+                           ErrorControl="normal"
+                           Account="NT SERVICE\MidPointPasswordAgentSender" />
+            <ServiceControl Id="MidPointPasswordAgentSenderControl"
+                           Name="MidPointPasswordAgentSender"
+                           Stop="both"
+                           Remove="uninstall"
+                           Wait="yes" />
+            <util:EventSource Log="Application"
+                              Name="MidPointPasswordAgentSender"
+                              EventMessageFile="[MidPointPasswordAgentDir]sender.exe" />
+          </Component>
+
+          <Component Id="AppRootRegistry" Guid="91EE8CF6-3DD2-4239-875A-38F9B3FFEB6A" Bitness="always64">
+            <RegistryValue Root="HKLM"
+                           Key="SOFTWARE\Evolveum\MidPointPasswordAgent"
+                           Name="RootPath"
+                           Value="[APPROOTDIR]"
+                           Type="string"
+                           KeyPath="yes">
+              <util:PermissionEx User="NT SERVICE\MidPointPasswordAgentSender"
+                                 GenericRead="yes"
+                                 GenericWrite="yes" />
+            </RegistryValue>
+            <RegistryValue Root="HKLM"
+                           Key="SOFTWARE\Evolveum\MidPointPasswordAgent"
+                           Name="Version"
+                           Value="[ProductVersion]"
+                           Type="string" />
+          </Component>
+
+          <Component Id="MidPointPasswordAgentManagersGroup" Guid="7D5E6367-7162-4E1C-AEB5-557D53017886" Bitness="always64" Permanent="yes">
+            <RegistryValue Root="HKLM" Key="SOFTWARE\Evolveum\MidPointPasswordAgent"
+                           Name="ADSyncManagers" Value="1" Type="integer" KeyPath="yes" />
+            <util:Group Id="MidPointPasswordAgentManagersGroup" Name="MidPoint Password Agent Managers" />
+          </Component>
+
+          <Component Id="KeysRegistry" Guid="DF3CCBE0-03B0-4C24-951D-6BA9F0D4D87B" Bitness="always64">
+            <RegistryValue Root="HKLM"
+                           Key="SOFTWARE\Evolveum\MidPointPasswordAgent\Keys"
+                           Name="LatestKey"
+                           Value=""
+                           Type="string"
+                           KeyPath="yes">
+              <util:PermissionEx User="NT SERVICE\MidPointPasswordAgentSender"
+                                 GenericRead="yes"
+                                 GenericWrite="yes" />
+            </RegistryValue>
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!--
+      Step 2: Set folder ACLs (stripping inherited permissions).
+      Register/unregister MidPointPasswordAgentListener in LSA Notification Packages (REG_MULTI_SZ).
+      WiX cannot natively append to a multi-string registry value, so PowerShell handles it.
+    -->
+    <SetProperty Id="ConfigureApp"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;icacls '[APPROOTDIR]Logs' /inheritance:r; icacls '[APPROOTDIR]Data' /inheritance:r /grant:r 'NT AUTHORITY\SYSTEM:(OI)(CI)(M)' 'NT SERVICE\MidPointPasswordAgentSender:(OI)(CI)(M)' 'MidPoint Password Agent Managers:(OI)(CI)(M)'; icacls '[APPROOTDIR]Config' /inheritance:r /grant:r 'NT AUTHORITY\SYSTEM:(OI)(CI)(M)' 'NT SERVICE\MidPointPasswordAgentSender:(OI)(CI)(R)' 'MidPoint Password Agent Managers:(OI)(CI)(M)'; if(-not(Test-Path '[APPROOTDIR]Config\config.json')){'{}' | Set-Content '[APPROOTDIR]Config\config.json' -Encoding UTF8}&quot;"
+                 Before="ConfigureApp"
+                 Sequence="execute" />
+    <CustomAction Id="ConfigureApp"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <SetProperty Id="LsaRegister"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$k='HKLM:\SYSTEM\CurrentControlSet\Control\Lsa';$n='Notification Packages';$v=(gp $k).$n;if('MidPointPasswordAgentListener' -notin $v){sp $k $n ($v+'MidPointPasswordAgentListener')}&quot;"
+                 Before="LsaRegister"
+                 Sequence="execute" />
+
+    <CustomAction Id="LsaRegister"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <SetProperty Id="LsaUnregister"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$k='HKLM:\SYSTEM\CurrentControlSet\Control\Lsa';$n='Notification Packages';$v=(gp $k).$n;sp $k $n ($v|?{$_ -ne 'MidPointPasswordAgentListener'})&quot;"
+                 Before="LsaUnregister"
+                 Sequence="execute" />
+
+    <CustomAction Id="LsaUnregister"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <SetProperty Id="RunSenderInstall"
+                 Value="&quot;[MidPointPasswordAgentDir]sender.exe&quot; --install"
+                 Before="RunSenderInstall"
+                 Sequence="execute" />
+
+    <CustomAction Id="RunSenderInstall"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <!--
+      Writes MidPoint connection settings into Config\config.json.
+      Uses New-Object PSObject to avoid needing literal double-quotes in the script
+      (which would require complex escaping inside -Command "...").
+      Runs only when MIDPOINT_URL is provided (UI or command-line).
+    -->
+    <SetProperty Id="WriteMidPointConfig"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$mp=New-Object PSObject; Add-Member -InputObject $mp NoteProperty BaseUrl '[MIDPOINT_URL]'; Add-Member -InputObject $mp NoteProperty Username '[MIDPOINT_USERNAME]'; Add-Member -InputObject $mp NoteProperty Password ''; Add-Member -InputObject $mp NoteProperty ResourceOid '[MIDPOINT_RESOURCE_OID]'; $cfg=New-Object PSObject; Add-Member -InputObject $cfg NoteProperty MidPoint $mp; $cfg|ConvertTo-Json -Depth 2|Set-Content -Path '[APPROOTDIR]Config\config.json' -Encoding UTF8&quot;"
+                 Before="WriteMidPointConfig"
+                 Sequence="execute" />
+
+    <CustomAction Id="WriteMidPointConfig"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+    <!--
+      Uninstall: remove the data directory by reading RootPath from registry before it is
+      deleted, then clean up remaining registry keys left after component uninstall.
+      Two attempts are made with a 3-second pause between them to allow Serilog to release
+      file handles after the service stops. If locked files still remain (e.g. listener.json
+      held by LSASS), they are scheduled for deletion via PendingFileRenameOperations so
+      smss.exe removes them on the next reboot before LSASS loads.
+    -->
+    <SetProperty Id="RemoveAppDirs"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$k='HKLM:\SOFTWARE\Evolveum\MidPointPasswordAgent'; $r=$null; if(Test-Path $k){$r=(Get-ItemProperty $k -ErrorAction SilentlyContinue).RootPath}; if($r){$p=$r.TrimEnd('\'); Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue; if(Test-Path $p){Start-Sleep 3; Remove-Item $p -Recurse -Force -ErrorAction SilentlyContinue}; if(Test-Path $p){$sk='HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager'; $so=@(); try{$so=(Get-ItemProperty $sk PendingFileRenameOperations -ErrorAction SilentlyContinue).PendingFileRenameOperations}catch{$so=@()}; if(-not $so){$so=@()}; Get-ChildItem $p -Recurse -Force -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | ForEach-Object{$so+='\??\'+$_.FullName; $so+=''}; $so+='\??\'+$p; $so+=''; Set-ItemProperty $sk PendingFileRenameOperations $so -Type MultiString -ErrorAction SilentlyContinue}}&quot;"
+                 Before="RemoveAppDirs"
+                 Sequence="execute" />
+
+    <CustomAction Id="RemoveAppDirs"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+    <!--
+      Uninstall: tries to delete the listener DLL immediately. If LSASS still holds a lock,
+      schedules deletion via PendingFileRenameOperations so smss.exe removes it on next reboot.
+    -->
+    <SetProperty Id="RemoveListenerDll"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$f='[System64Folder]MidPointPasswordAgentListener.dll'; Remove-Item $f -Force -ErrorAction SilentlyContinue; if(Test-Path $f){$sk='HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager'; $so=@(); try{$so=(Get-ItemProperty $sk PendingFileRenameOperations -ErrorAction SilentlyContinue).PendingFileRenameOperations}catch{$so=@()}; if(-not $so){$so=@()}; $so+='\??\'+$f; $so+=''; Set-ItemProperty $sk PendingFileRenameOperations $so -Type MultiString -ErrorAction SilentlyContinue}&quot;"
+                 Before="RemoveListenerDll"
+                 Sequence="execute" />
+
+    <CustomAction Id="RemoveListenerDll"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <!-- Uninstall: explicitly removes the sender binary directory from Program Files. -->
+    <SetProperty Id="RemoveSenderDir"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;sc.exe stop MidPointPasswordAgentSender 2&gt;&amp;1 | Out-Null; sc.exe delete MidPointPasswordAgentSender 2&gt;&amp;1 | Out-Null; $d='[MidPointPasswordAgentDir]'.TrimEnd('\'); Remove-Item $d -Recurse -Force -ErrorAction SilentlyContinue; $p='[ProgramFiles64Folder]Evolveum'.TrimEnd('\'); if((Get-ChildItem $p -ErrorAction SilentlyContinue | Measure-Object).Count -eq 0){Remove-Item $p -Force -ErrorAction SilentlyContinue}&quot;"
+                 Before="RemoveSenderDir"
+                 Sequence="execute" />
+
+    <CustomAction Id="RemoveSenderDir"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <SetProperty Id="RemoveRegistries"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;Remove-Item 'HKLM:\SOFTWARE\Evolveum\MidPointPasswordAgent' -Recurse -Force -ErrorAction SilentlyContinue; $p='HKLM:\SOFTWARE\Evolveum'; if((Get-ChildItem $p -ErrorAction SilentlyContinue | Measure-Object).Count -eq 0){Remove-Item $p -Force -ErrorAction SilentlyContinue}; Remove-Item 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\MidPointPasswordAgentListener' -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item 'HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\MidPointPasswordAgentSender' -Recurse -Force -ErrorAction SilentlyContinue&quot;"
+                 Before="RemoveRegistries"
+                 Sequence="execute" />
+
+    <CustomAction Id="RemoveRegistries"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <Binary Id="MySecureActionsDll" SourceFile="sender.DPAPI\bin\Release\net48\win-x64\sender.DPAPI.CA.dll" />
+
+    <!-- Used to retrieve midpoint password form ENV variable (usefull for silent install if we dont want to expose password to powershell history) -->
+    <SetProperty Id="MIDPOINT_PASSWORD"
+                 Value="[%MIDPOINT_PASSWORD]"
+                 After="AppSearch"
+                 Condition="%MIDPOINT_PASSWORD" />
+
+    <CustomAction Id="SetStorePasswordData"
+                  Property="StorePassword"
+                  Value="PASSWORD=[MIDPOINT_PASSWORD];CONFIG=[APPROOTDIR]Config\config.json" />
+
+    <CustomAction Id="StorePassword"
+                  BinaryRef="MySecureActionsDll"
+                  DllEntry="StorePassword"
+                  Execute="deferred"
+                  Impersonate="no"
+                  HideTarget="yes"
+                  Return="check" />
+
+    <SetProperty Id="RemoveManagersGroup"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;$n='MidPoint Password Agent Managers'; if((Get-WmiObject Win32_ComputerSystem).DomainRole -ge 4){$g=Get-ADGroup -Filter{Name -eq $n} -EA SilentlyContinue; if($g){Remove-ADGroup -Identity $n -Confirm:$false}}else{Remove-LocalGroup -Name $n -EA SilentlyContinue}&quot;"
+                 Before="RemoveManagersGroup"
+                 Sequence="execute" />
+    <CustomAction Id="RemoveManagersGroup"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <InstallExecuteSequence>
+      <Custom Action="ConfigureApp" After="InstallServices" Condition="NOT REMOVE" />
+      <Custom Action="WriteMidPointConfig" After="ConfigureApp" Condition="NOT REMOVE AND MIDPOINT_URL AND NOT WIX_UPGRADE_DETECTED" />
+      <Custom Action="SetStorePasswordData" Before="StorePassword" Condition="NOT REMOVE AND MIDPOINT_PASSWORD AND NOT WIX_UPGRADE_DETECTED" />
+      <Custom Action="StorePassword" After="WriteMidPointConfig" Condition="NOT REMOVE AND MIDPOINT_PASSWORD AND NOT WIX_UPGRADE_DETECTED" />
+      <Custom Action="RunSenderInstall" After="StorePassword" Condition="NOT REMOVE" />
+      <Custom Action="LsaRegister" After="RunSenderInstall" Condition="NOT REMOVE" />
+      <Custom Action="LsaUnregister" Before="RemoveFiles" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <Custom Action="RemoveListenerDll" After="LsaUnregister" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <Custom Action="RemoveAppDirs" After="StopServices" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <Custom Action="RemoveSenderDir" After="DeleteServices" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <Custom Action="RemoveManagersGroup" After="RemoveSenderDir" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <Custom Action="RemoveRegistries" After="RemoveRegistryValues" Condition='REMOVE~="ALL" AND NOT UPGRADINGPRODUCTCODE' />
+      <!-- LSA loads notification packages at boot; a reboot is required after both install and uninstall. -->
+      <ScheduleReboot After="InstallFinalize" />
+    </InstallExecuteSequence>
+
+    <Feature Id="Complete" Title="MidPoint Password Agent for Active Directory" Level="1">
+      <ComponentRef Id="LsaDll" />
+      <ComponentRef Id="SenderService" />
+      <ComponentRef Id="AppRootRegistry" />
+      <ComponentRef Id="KeysRegistry" />
+      <ComponentRef Id="AppRootDirPermission" />
+      <ComponentRef Id="PasswordPs" />
+      <ComponentRef Id="LogsDirPermission" />
+      <ComponentRef Id="DataDirPermission" />
+      <ComponentRef Id="ConfigDirPermission" />
+    </Feature>
+
+    <!--
+      Separate feature so util:Group is skipped during upgrade (level drops to 0).
+      Permanent="yes" on the component ensures MSI never auto-removes the group;
+      RemoveManagersGroup custom action handles deletion on full uninstall only.
+    -->
+    <Feature Id="ManagersGroupFeature" Level="1">
+      <Level Value="0" Condition="WIX_UPGRADE_DETECTED" />
+      <ComponentRef Id="MidPointPasswordAgentManagersGroup" />
+    </Feature>
+
+  </Package>
+</Wix>

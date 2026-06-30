@@ -1,0 +1,9 @@
+{
+  "name": "adpasswordlistener",
+  "version": "0.0.1",
+  "dependencies": [
+    "spdlog",
+    "nlohmann-json",
+    "cppcodec"
+  ]
+}

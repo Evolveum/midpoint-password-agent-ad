@@ -1,0 +1,699 @@
+
+NuGet Dependency Tree
+Source: obj/project.assets.json
+■ direct (12)   ■ transitive (28)
+
+── net10.0 ──
+
+CommandLineParser 2.9.1 [direct]
+
+Microsoft.Extensions.Configuration.Json 10.0.7 [direct]
+├── Microsoft.Extensions.Configuration 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+└── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+    └── Microsoft.Extensions.Primitives 10.0.7
+
+Microsoft.Extensions.Hosting 10.0.5 [direct]
+├── Microsoft.Extensions.Configuration 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.CommandLine 10.0.5
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.EnvironmentVariables 10.0.5
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.Json 10.0.7 [direct]
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Configuration.UserSecrets 10.0.5
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Json 10.0.7 [direct]
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│       ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│       │   └── Microsoft.Extensions.Primitives 10.0.7
+│       ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+├── Microsoft.Extensions.Diagnostics 10.0.5
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Diagnostics.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │   └── Microsoft.Extensions.Primitives 10.0.7
+│       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │       └── Microsoft.Extensions.Primitives 10.0.7
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       ├── Microsoft.Extensions.Options 10.0.5
+│       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       │   └── Microsoft.Extensions.Primitives 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Hosting.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Diagnostics.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│       └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+├── Microsoft.Extensions.Logging 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   └── Microsoft.Extensions.Options 10.0.5
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+├── Microsoft.Extensions.Logging.Configuration 10.0.5
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Options 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │   └── Microsoft.Extensions.Primitives 10.0.7
+│       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│       │       └── Microsoft.Extensions.Primitives 10.0.7
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       ├── Microsoft.Extensions.Options 10.0.5
+│       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       │   └── Microsoft.Extensions.Primitives 10.0.7
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Logging.Console 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging.Configuration 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Options 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│   │       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       ├── Microsoft.Extensions.Options 10.0.5
+│   │       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Options 10.0.5
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Logging.Debug 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│       └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+├── Microsoft.Extensions.Logging.EventLog 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Options 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── System.Diagnostics.EventLog 10.0.5
+├── Microsoft.Extensions.Logging.EventSource 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Options 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Primitives 10.0.7
+└── Microsoft.Extensions.Options 10.0.5
+    ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+    └── Microsoft.Extensions.Primitives 10.0.7
+
+Microsoft.Extensions.Hosting.WindowsServices 10.0.5 [direct]
+├── Microsoft.Extensions.Hosting 10.0.5 [direct]
+│   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.CommandLine 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.EnvironmentVariables 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.Json 10.0.7 [direct]
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Configuration.UserSecrets 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Json 10.0.7 [direct]
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.FileExtensions 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   │   │   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │       ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Diagnostics 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Diagnostics.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│   │       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       ├── Microsoft.Extensions.Options 10.0.5
+│   │       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.FileProviders.Physical 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileSystemGlobbing 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Hosting.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Diagnostics.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.FileProviders.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging.Configuration 10.0.5
+│   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Options 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│   │       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │       │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       ├── Microsoft.Extensions.Options 10.0.5
+│   │       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Console 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Configuration 10.0.5
+│   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   │   │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │   │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Options 10.0.5
+│   │   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │   └── Microsoft.Extensions.Options.ConfigurationExtensions 10.0.5
+│   │   │       ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │       ├── Microsoft.Extensions.Configuration.Binder 10.0.5
+│   │   │       │   ├── Microsoft.Extensions.Configuration 10.0.7
+│   │   │       │   │   ├── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │       │   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │       │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │       │   └── Microsoft.Extensions.Configuration.Abstractions 10.0.7
+│   │   │       │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       ├── Microsoft.Extensions.Options 10.0.5
+│   │   │       │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Debug 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging.EventLog 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Options 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── System.Diagnostics.EventLog 10.0.5
+│   ├── Microsoft.Extensions.Logging.EventSource 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Options 10.0.5
+│   │   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Options 10.0.5
+│   │   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── Microsoft.Extensions.Options 10.0.5
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       └── Microsoft.Extensions.Primitives 10.0.7
+├── Microsoft.Extensions.Logging.EventLog 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Options 10.0.5
+│   │       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │       └── Microsoft.Extensions.Primitives 10.0.7
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Options 10.0.5
+│   │   ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.Primitives 10.0.7
+│   └── System.Diagnostics.EventLog 10.0.5
+└── System.ServiceProcess.ServiceController 10.0.5
+    └── System.Diagnostics.EventLog 10.0.5
+
+Serilog 4.3.1 [direct]
+
+Serilog.Extensions.Logging 10.0.0 [direct]
+├── Microsoft.Extensions.Logging 10.0.5
+│   ├── Microsoft.Extensions.DependencyInjection 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   ├── Microsoft.Extensions.Logging.Abstractions 10.0.5
+│   │   └── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│   └── Microsoft.Extensions.Options 10.0.5
+│       ├── Microsoft.Extensions.DependencyInjection.Abstractions 10.0.5
+│       └── Microsoft.Extensions.Primitives 10.0.7
+└── Serilog 4.3.1 [direct]
+
+Serilog.Sinks.Console 6.1.1 [direct]
+└── Serilog 4.3.1 [direct]
+
+Serilog.Sinks.EventLog 4.0.0 [direct]
+├── Serilog 4.3.1 [direct]
+└── System.Diagnostics.EventLog 10.0.5
+
+Serilog.Sinks.File 7.0.0 [direct]
+└── Serilog 4.3.1 [direct]
+
+SonarAnalyzer.CSharp 10.23.0.137933 [direct]
+
+StyleCop.Analyzers 1.2.0-beta.354 [direct]
+└── StyleCop.Analyzers.Unstable 1.2.0.354
+
+System.Security.Cryptography.ProtectedData 9.0.4 [direct]
+

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>true</ImplicitUsings>
+    <UserSecretsId>dotnet-sender-10ccce8e-d841-4d03-a8d5-c77b81ec72d7</UserSecretsId>
+    <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.5" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.4" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.8" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+---
+# clang-tidy configuration for the MidPointPasswordAgentListener module.
+#
+# Conservative check set chosen for Windows API code — cppcoreguidelines and
+# modernize checks are largely excluded because HeapAlloc, UNICODE_STRING,
+# raw pointer patterns, and MSVC SEH (__try/__except) are intentional and
+# unavoidable in an LSA password filter DLL.
+
+Checks: >
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape,
+  -bugprone-empty-catch,
+  -bugprone-unsafe-buffer-usage-in-libc-call,
+  -clang-diagnostic-nonportable-system-include-path,
+  performance-*,
+  -performance-avoid-endl,
+  readability-braces-around-statements,
+  readability-const-return-type,
+  readability-else-after-return,
+  readability-misleading-indentation,
+  readability-redundant-control-flow,
+  readability-redundant-string-cstr,
+  readability-string-compare
+
+# Only report issues in our own source files — suppresses noise from
+# Windows SDK headers (windows.h, ntsecapi.h, etc.)
+HeaderFilterRegex: '.*[/\\]listener[/\\]src[/\\].*'
+
+# Do not treat clang-tidy warnings as errors here; CI can be tightened later.
+WarningsAsErrors: ''
+
+FormatStyle: none

@@ -1,0 +1,22 @@
+<Project Sdk="WixToolset.Sdk/0.0.0-build.build.1237">
+  <PropertyGroup>
+    <!-- wix0: accepted by wix.exe (SDK major version = 0); wix8: accepted by WixToolset.Util.wixext -->
+    <AcceptEula>wix0;wix8</AcceptEula>
+    <!-- Disable glob includes (**/*.wxs, **/*.wxl) to prevent double-inclusion when files
+         are also listed explicitly, and to avoid glob expansion failures on network drives. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- ICE09: LsaDll is intentionally removable; lsass holds the file lock so
+         Windows Installer schedules deletion on next reboot automatically. -->
+    <SuppressIces>ICE09</SuppressIces>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildProjectDirectory)\Package.wxs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Util.wixext" Version="0.0.0-build.build.1237" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="0.0.0-build.build.1237" />
+  </ItemGroup>
+</Project>

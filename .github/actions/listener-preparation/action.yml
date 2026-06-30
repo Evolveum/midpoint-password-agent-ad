@@ -1,0 +1,19 @@
+name: "Setup Listener Environment"
+description: "Setup CMake, VCPKG with spdlog and Just"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Initialize MSVC environment
+      uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+      with:
+        arch: x64
+
+    - name: Set VCPKG_ROOT
+      shell: pwsh
+      run: echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
+
+    - name: Install just
+      uses: extractions/setup-just@v3
+      with:
+        just-version: 1.46.0
