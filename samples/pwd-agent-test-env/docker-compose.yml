@@ -1,0 +1,74 @@
+services:
+  midpoint-data:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=db-pwd-123
+      - POSTGRES_USER=midpoint
+      - POSTGRES_INITDB_ARGS=--lc-collate=en_US.utf8 --lc-ctype=en_US.utf8
+    networks:
+      - net
+    volumes:
+      - midpoint_data:/var/lib/postgresql/data
+
+  data-init:
+    image: evolveum/midpoint:4.10.3-alpine
+    command: >
+      bash -c "
+      cd /opt/midpoint ;
+      bin/midpoint.sh init-native ;
+      echo ' - - - - - - ' ;
+      bin/ninja.sh -B info >/dev/null 2>/tmp/ninja.log ;
+      grep -q \"ERROR\" /tmp/ninja.log && (
+      bin/ninja.sh run-sql --create --mode REPOSITORY  ;
+      bin/ninja.sh run-sql --create --mode AUDIT
+      ) ||
+      echo -e '\\n Repository init is not needed...' ;
+      "
+    depends_on:
+      - midpoint-data
+    environment:
+      - MP_INIT_CFG=/opt/midpoint/var
+      - MP_SET_midpoint_repository_jdbcUsername=midpoint
+      - MP_SET_midpoint_repository_database=postgresql
+      - MP_SET_midpoint_repository_jdbcPassword=db-pwd-123
+      - MP_SET_midpoint_repository_jdbcUrl=jdbc:postgresql://midpoint-data:5432/midpoint
+    networks:
+      - net
+    volumes:
+      - midpoint_home:/opt/midpoint/var
+
+  midpoint-server:
+    image: evolveum/midpoint:4.10.3-alpine
+    hostname: midpoint
+    depends_on:
+      data-init:
+        condition: service_completed_successfully
+      midpoint-data:
+        condition: service_started
+    command: [ "/opt/midpoint/bin/midpoint.sh", "container" ]
+    ports:
+      - 8080:8080
+    environment:
+     - MP_SET_midpoint_administrator_initialPassword=SUPER5ecr3t
+     - MP_SET_midpoint_repository_jdbcUsername=midpoint
+     - MP_SET_midpoint_repository_database=postgresql
+     - MP_SET_midpoint_repository_jdbcPassword=db-pwd-123
+     - MP_SET_midpoint_repository_jdbcUrl=jdbc:postgresql://midpoint-data:5432/midpoint
+     - MP_SET_server_servlet_session_timeout=4h
+     - MP_MEM_MAX=4096M
+     - MP_UNSET_midpoint_repository_hibernateHbm2ddl=1
+     - MP_ENTRY_POINT=/opt/midpoint-dirs-docker-entrypoint
+    networks:
+     - net
+    volumes:
+     - midpoint_home:/opt/midpoint/var
+     - ./midpoint_server/container_files/mp-home:/opt/midpoint-dirs-docker-entrypoint/:ro
+     - ../mail-notifications.txt:/opt/midpoint/var/mail-notifications.txt
+
+networks:
+  net:
+    driver: bridge
+
+volumes:
+  midpoint_data:
+  midpoint_home:

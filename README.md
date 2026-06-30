@@ -1,6 +1,12 @@
 # MidPoint Password Agent for Active Directory
 
-Captures Active Directory password changes on Domain Controllers and forwards them to a configurable REST endpoint in real time.
+Captures Active Directory password changes on Domain Controllers and forwards them to a configurable midPoint REST endpoint in real time.
+
+## Administrator's Guide
+
+Please see [`docs/administration/README.md`](docs/administration/README.md) for installation and configuration instructions.
+
+## Architecture
 
 The solution runs on every Domain Controller and consists of two decoupled components:
 
@@ -9,9 +15,7 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 | **Listener** | C++ | LSA Password Notification Filter. Captures the cleartext password at change time and writes it to a local filesystem queue. | [`docs/development/listener/README.md`](docs/development/listener/README.md) |
 | **Sender** | C# | Windows service that reads the queue and forwards events to the target REST API. | [`docs/development/sender/README.md`](docs/development/sender/README.md) |
 
----
-
-## Repository layout
+## Repository Layout
 
 ```
 .
@@ -29,3 +33,7 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 └── justfile                 # Just recipes
 └── README.md
 ```
+
+## Developer's Guide
+
+Please see [`docs/development/`](docs/development/) for development instructions.

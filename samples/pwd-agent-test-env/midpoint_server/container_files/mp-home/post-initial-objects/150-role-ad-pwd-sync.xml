@@ -1,0 +1,38 @@
+<role xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+      oid="8e17f248-6088-4ab0-9b7c-67c9f18477e3">
+    <name>AD Password Synchronization Service Role</name>
+    <authorization>
+        <name>notify-change</name>
+        <description>Allows calling the "notifyChange" method via REST</description>
+        <action>http://midpoint.evolveum.com/xml/ns/public/security/authorization-rest-3#notifyChange</action>
+        <action>http://midpoint.evolveum.com/xml/ns/public/security/authorization-model-3#notifyChange</action>
+    </authorization>
+    <authorization>
+        <name>read-resource</name>
+        <description>Allows reading the AD resource</description>
+        <action>http://midpoint.evolveum.com/xml/ns/public/security/authorization-model-3#read</action>
+        <object>
+            <type>ResourceType</type>
+            <!-- specify OID if needed -->
+        </object>
+    </authorization>
+    <authorization>
+        <name>read-shadow</name>
+        <description>Allows finding related shadow or shadows related to the AD resource</description>
+        <action>http://midpoint.evolveum.com/xml/ns/public/security/authorization-model-3#read</action>
+        <object>
+            <type>ShadowType</type>
+            <!-- limit shadows if needed -->
+        </object>
+    </authorization>
+    <authorization>
+        <name>execute-modifications</name>
+        <description>Allows executing all computed modifications</description>
+        <action>http://midpoint.evolveum.com/xml/ns/public/security/authorization-model-3#modify</action>
+        <phase>execution</phase>
+        <object>
+            <type>UserType</type>
+            <!-- limit users or modified items if needed -->
+        </object>
+    </authorization>
+</role>

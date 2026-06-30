@@ -1,0 +1,114 @@
+<resource xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+          xmlns:q="http://prism.evolveum.com/xml/ns/public/query-3"
+          xmlns:ri="http://midpoint.evolveum.com/xml/ns/public/resource/instance-3"
+          oid="baaad572-97d0-491e-9b4a-024633533778">
+    <name>Active Directory</name>
+    <connectorRef type="ConnectorType">
+        <filter>
+            <q:text>connectorType = "com.evolveum.polygon.connector.ldap.ad.AdLdapConnector"</q:text>
+        </filter>
+    </connectorRef>
+    <connectorConfiguration xmlns:icfc="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/connector-schema-3">
+        <icfc:configurationProperties
+                xmlns:gen735="http://midpoint.evolveum.com/xml/ns/public/connector/icf-1/bundle/com.evolveum.polygon.connector-ldap/com.evolveum.polygon.connector.ldap.ad.AdLdapConnector">
+            <gen735:host>host.docker.internal</gen735:host>
+            <gen735:port>7636</gen735:port>
+            <gen735:connectionSecurity>ssl</gen735:connectionSecurity>
+            <gen735:bindDn>CN=vagrant,CN=Users,DC=example,DC=local</gen735:bindDn>
+            <gen735:bindPassword>vagrant</gen735:bindPassword>
+            <gen735:baseContext>DC=example,DC=local</gen735:baseContext>
+            <gen735:allowUntrustedSsl>true</gen735:allowUntrustedSsl>
+        </icfc:configurationProperties>
+    </connectorConfiguration>
+    <schema>
+        <generationConstraints>
+            <generateObjectClass>ri:user</generateObjectClass>
+        </generationConstraints>
+    </schema>
+    <schemaHandling>
+        <objectType>
+            <kind>account</kind>
+            <intent>default</intent>
+            <default>true</default>
+            <delineation>
+                <objectClass>ri:user</objectClass>
+            </delineation>
+            <attribute>
+                <ref>ri:dn</ref>
+                <outbound>
+                    <strength>strong</strength>
+                    <source>
+                        <path>fullName</path>
+                    </source>
+                    <expression>
+                        <script>
+                            <code>/CN=/ + fullName + /,CN=Users,DC=example,DC=local/</code>
+                        </script>
+                    </expression>
+                </outbound>
+            </attribute>
+            <attribute>
+                <ref>ri:cn</ref>
+                <correlator/>
+                <outbound>
+                    <strength>strong</strength>
+                    <source>
+                        <path>fullName</path>
+                    </source>
+                </outbound>
+                <inbound>
+                    <target>
+                        <path>fullName</path>
+                    </target>
+                    <use>correlation</use>
+                </inbound>
+            </attribute>
+            <attribute>
+                <ref>ri:sAMAccountName</ref>
+                <secondaryIdentifier>true</secondaryIdentifier>
+                <outbound>
+                    <strength>strong</strength>
+                    <source>
+                        <path>name</path>
+                    </source>
+                </outbound>
+            </attribute>
+            <credentials>
+                <password>
+                    <inbound>
+                        <name>password-from-ad</name>
+                        <channel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#notifyChange</channel>
+                        <condition>
+                            <script>
+                                <code>
+                                    // This is to avoid the password being cleared in later waves, when sync delta is
+                                    // (intentionally) not taken into account.
+                                    midpoint.modelContext.projectionWave == 0
+                                </code>
+                            </script>
+                        </condition>
+                    </inbound>
+                    <outbound>
+                        <name>password-to-ad</name>
+                        <!-- We don't want to propagate password changes obtained via "notifyChange" mechanism back to the AD -->
+                        <exceptChannel>http://midpoint.evolveum.com/xml/ns/public/common/channels-3#notifyChange</exceptChannel>
+                    </outbound>
+                </password>
+            </credentials>
+            <synchronization>
+                <reaction>
+                    <situation>unlinked</situation>
+                    <actions>
+                        <link/>
+                    </actions>
+                </reaction>
+                <reaction>
+                    <situation>linked</situation>
+                    <actions>
+                        <synchronize/>
+                    </actions>
+                </reaction>
+            </synchronization>
+        </objectType>
+    </schemaHandling>
+</resource>

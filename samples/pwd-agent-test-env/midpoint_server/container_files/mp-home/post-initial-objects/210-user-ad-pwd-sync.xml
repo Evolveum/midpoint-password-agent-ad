@@ -1,0 +1,13 @@
+<user xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+      oid="40033798-e4b9-43c5-8be4-3aaa9852b2f8">
+    <name>ad-pwd-sync</name>
+    <fullName>AD Password Synchronization Service</fullName>
+    <assignment>
+        <targetRef oid="8e17f248-6088-4ab0-9b7c-67c9f18477e3" type="RoleType"/>
+    </assignment>
+    <credentials>
+        <password>
+            <value>password</value>
+        </password>
+    </credentials>
+</user>

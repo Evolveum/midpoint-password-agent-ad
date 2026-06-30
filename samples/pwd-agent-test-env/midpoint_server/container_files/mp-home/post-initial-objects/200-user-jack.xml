@@ -1,0 +1,12 @@
+<user xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+      oid="ad3fb4ef-49d7-464b-a4e5-f3f019b1dd11">
+    <name>jack</name>
+    <fullName>Jack Sparrow</fullName>
+    <assignment>
+        <construction>
+            <resourceRef oid="baaad572-97d0-491e-9b4a-024633533778"/>
+            <kind>account</kind>
+            <intent>default</intent>
+        </construction>
+    </assignment>
+</user>
