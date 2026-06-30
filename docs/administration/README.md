@@ -2,6 +2,8 @@
 
 This document describes how to install and administer MidPoint Password Agent for AD.
 
+If you'd like to see a sample installation of the agent and midPoint, please see [sample-installation/pwd-agent-test-env](../../sample-installation/README.adoc).
+
 ## Installation
 
 ### Prerequisites
@@ -21,8 +23,8 @@ The user must have the following authorizations:
 
 For the example setup (that can be a bit hardened, as indicated in the comments) please see
 
-* [sample role object](/samples/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/150-role-ad-pwd-sync.xml)
-* [sample user object](/samples/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/210-user-ad-pwd-sync.xml)
+* [sample role object](/sample-installation/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/150-role-ad-pwd-sync.xml)
+* [sample user object](/sample-installation/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/210-user-ad-pwd-sync.xml)
 
 #### Active Directory Resource Definition
 
@@ -53,7 +55,7 @@ The resource must be configured to process inbound password changes. Moreover, i
 </credentials>
 ```
 
-See [AD resource definition](/samples/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/100-resource-ad.xml) for a full example.
+See [AD resource definition](/sample-installation/pwd-agent-test-env/midpoint_server/container_files/mp-home/post-initial-objects/100-resource-ad.xml) for a full example.
 
 ### Standard (Interactive) Installation
 

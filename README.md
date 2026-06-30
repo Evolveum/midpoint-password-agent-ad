@@ -6,6 +6,8 @@ Captures Active Directory password changes on Domain Controllers and forwards th
 
 Please see [`docs/administration/README.md`](docs/administration/README.md) for installation and configuration instructions.
 
+Alternatively, you can see a sample installation of the agent and midPoint in [`sample-installation/pwd-agent-test-env`](sample-installation/README.adoc).
+
 ## Architecture
 
 The solution runs on every Domain Controller and consists of two decoupled components:
@@ -21,6 +23,7 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 .
 ├── installation/            # Listener + Sender instalation scripts (.ps1)
 ├── docs/                    # Documentation
+├── sample-installation/     # Sample installation of the agent and midPoint
 ├── listener/                # C++ LSA filter DLL
 │   ├── CMakeLists.txt
 │   ├── PasswordFilter.def   # Linker exports

@@ -1,0 +1,1 @@
+curl --user administrator:SUPER5ecr3t -H "Accept: application/json" -X GET "http://localhost:8080/midpoint/ws/rest/users/ad3fb4ef-49d7-464b-a4e5-f3f019b1dd11?exclude=operationExecution&exclude=metadata&exclude=assignment&exclude=iteration&exclude=iterationToken&exclude=activation"
