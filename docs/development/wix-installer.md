@@ -31,7 +31,7 @@ After that use `just build-installer` recipe to build `Installer.msi` file.
 Wix by default supports also silent installation of `.msi` file (installation inside terminal without UI). Installation can be started with command
 
 ```powershell
-msiexec /i Installer_1.0.0.msi /quiet MIDPOINT_URL=http://192.168.64.1:8080 MIDPOINT_USERNAME=administrator MIDPOINT_RESOURCE_OID=baaad572-97d0-491e-9b4a-024633533778 MIDPOINT_PASSWORD=SUPER5ecr3t APPROOTDIR=C:\ProgramData\MidPoint Password Agent for Active Directory\ /l*v install.log
+msiexec /i Installer.msi /quiet MIDPOINT_URL=http://192.168.64.1:8080/midpoint MIDPOINT_USERNAME=administrator MIDPOINT_RESOURCE_OID=baaad572-97d0-491e-9b4a-024633533778 MIDPOINT_PASSWORD=SUPER5ecr3t APPROOTDIR=C:\ProgramData\MidPoint Password Agent for Active Directory\ /l*v install.log
 ```
 
 This command only sets value for `APPROOTDIR` attribute

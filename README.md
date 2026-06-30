@@ -6,8 +6,8 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 
 | Component | Language | Role | Docs |
 |---|---|---|---|
-| **Listener** | C++ | LSA Password Notification Filter. Captures the cleartext password at change time and writes it to a local filesystem queue. | [`docs/listener/README.md`](docs/listener/README.md) |
-| **Sender** | C# | Windows service that reads the queue and forwards events to the target REST API. | [`docs/sender/README.md`](docs/sender/README.md) |
+| **Listener** | C++ | LSA Password Notification Filter. Captures the cleartext password at change time and writes it to a local filesystem queue. | [`docs/development/listener/README.md`](docs/development/listener/README.md) |
+| **Sender** | C# | Windows service that reads the queue and forwards events to the target REST API. | [`docs/development/sender/README.md`](docs/development/sender/README.md) |
 
 ---
 
@@ -29,6 +29,3 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 └── justfile                 # Just recipes
 └── README.md
 ```
-
-## Dependencies + Licenses
-[See](docs/dependencies.md)
