@@ -1,4 +1,4 @@
-<Project Sdk="WixToolset.Sdk/0.0.0-build.build.1237">
+<Project Sdk="WixToolset.Sdk/0.0.0-build.build.1241">
   <PropertyGroup>
     <!-- wix0: accepted by wix.exe (SDK major version = 0); wix8: accepted by WixToolset.Util.wixext -->
     <AcceptEula>wix0;wix8</AcceptEula>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WixToolset.Util.wixext" Version="0.0.0-build.build.1237" />
-    <PackageReference Include="WixToolset.UI.wixext" Version="0.0.0-build.build.1237" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="0.0.0-build.build.1241" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="0.0.0-build.build.1241" />
   </ItemGroup>
 </Project>
