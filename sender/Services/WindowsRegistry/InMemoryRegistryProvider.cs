@@ -1,5 +1,8 @@
 namespace Sender.WindowsRegistry;
 
+/// <summary>
+/// In memory windows registry (used during tests or local development)
+/// </summary>
 internal class InMemoryRegistryProvider(Dictionary<string, string> initialValues) : IWindowsRegistryProvider
 {
     private readonly Dictionary<string, string> inMemoryRegistry = initialValues;

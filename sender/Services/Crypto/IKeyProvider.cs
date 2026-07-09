@@ -6,6 +6,7 @@
 
 namespace Sender.Crypto;
 
+// Key provider interface that needs to be implemented
 public interface IKeyProvider
 {
     byte[] GenerateNewKey();

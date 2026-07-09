@@ -5,12 +5,11 @@
  */
 #pragma once
 #include "app_config.h"
-#include <atomic>
+#include "file_watcher.h"
 #include <functional>
-#include <string>
-#include <thread>
-#include <filesystem>
+#include <memory>
 
+// Creates watcher on `config.json` file. On change it recreates new AppConfig instance
 class ConfigWatcher {
 public:
     explicit ConfigWatcher(std::function<void(const AppConfig&)> onChanged);
@@ -20,11 +19,9 @@ public:
     void Stop();
 
 private:
-    void WatchLoop();
+    void OnFileChanged();
 
-    std::filesystem::path _configFilePath;
     std::function<void(const AppConfig&)> _onChanged;
     AppConfig _lastConfig;
-    std::atomic<bool> _stop{false};
-    std::thread _thread;
+    std::unique_ptr<FileWatcher> _fileWatcher;
 };

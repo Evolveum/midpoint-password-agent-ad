@@ -7,6 +7,9 @@ using Sender.MidPoint;
 
 namespace Sender.Configuration
 {
+    /// <summary>
+    /// Holds Sender configuration (some fields are constants rest are loaded from `config.json` file)
+    /// </summary>
     public record class SenderConfiguration : SenderJsonConfiguration
     {
         public string RootPath { get; init; } = string.Empty;

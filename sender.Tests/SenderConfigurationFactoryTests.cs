@@ -236,6 +236,63 @@ public class SenderConfigurationFactoryTests : IDisposable
     }
 
     [Fact]
+    public void WithNoJsonFile_Retry_DefaultsAreUsed()
+    {
+        var config = Build("/queue");
+
+        Assert.Equal(0, config.MaxRequestsPerMinute);
+        Assert.Equal(5, config.MaxRetryCount);
+        Assert.Equal(TimeSpan.FromMinutes(1), config.RetryBaseDelay);
+        Assert.Equal(TimeSpan.FromHours(1), config.RetryMaxDelay);
+    }
+
+    [Fact]
+    public void WithJsonFile_Retry_ValuesAreApplied()
+    {
+        var path = WriteTempJson("""
+            {
+              "Sender": {
+                "MaxRequestsPerMinute": 30,
+                "MaxRetryCount": 40,
+                "RetryBaseDelay": "00:00:10",
+                "RetryMaxDelay": "02:00:00"
+              }
+            }
+            """);
+
+        var config = Build("/queue", path);
+
+        Assert.Equal(30, config.MaxRequestsPerMinute);
+        Assert.Equal(40, config.MaxRetryCount);
+        Assert.Equal(TimeSpan.FromSeconds(10), config.RetryBaseDelay);
+        Assert.Equal(TimeSpan.FromHours(2), config.RetryMaxDelay);
+    }
+
+    [Fact]
+    public void WithNoJsonFile_MaxQueueDepth_DefaultIsUsed()
+    {
+        var config = Build("/queue");
+
+        Assert.Equal(10, config.MaxQueueDepth);
+    }
+
+    [Fact]
+    public void WithJsonFile_MaxQueueDepth_ValueIsApplied()
+    {
+        var path = WriteTempJson("""
+            {
+              "Sender": {
+                "MaxQueueDepth": 25
+              }
+            }
+            """);
+
+        var config = Build("/queue", path);
+
+        Assert.Equal(25, config.MaxQueueDepth);
+    }
+
+    [Fact]
     public void WithPartialJsonFile_LogRotation_MissingValuesUseDefaults()
     {
         var path = WriteTempJson("""

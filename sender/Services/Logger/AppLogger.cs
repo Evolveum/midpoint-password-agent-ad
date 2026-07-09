@@ -7,6 +7,9 @@ using Serilog.Context;
 
 namespace Sender.Logger
 {
+  /// <summary>
+  /// Logging service (wrapper arround ILogger) with 3 sinks
+  /// </summary>
   public class AppLogger
   {
       private readonly ILogger<AppLogger> _logger;

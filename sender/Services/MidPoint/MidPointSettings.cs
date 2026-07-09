@@ -5,6 +5,9 @@
  */
 namespace Sender.MidPoint
 {
+    /// <summary>
+    /// Class that represents MidPoint configuration inside `config.json` file
+    /// </summary>
     public record MidPointJsonConfiguration
     {
         public string BaseUrl { get; set; } = string.Empty;

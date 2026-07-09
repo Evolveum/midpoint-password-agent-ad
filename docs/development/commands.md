@@ -44,6 +44,12 @@ Run uninstaller in logging mode
 msiexec /x Installer.msi /l*v uninstall.log
 ```
 
+
+Check how many installation already exists
+```powershell
+(Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' | Where-Object { $_.DisplayName -like '*MidPoint Password Agent for Active Directory*' }).Count
+```
+
 Remove installation
 ```powershell
 Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' | Where-Object { $_.DisplayName -like '*MidPoint Password Agent for Active Directory*' } | ForEach-Object { msiexec /x $_.PSChildName /quiet }

@@ -9,6 +9,9 @@ using Sender.Configuration;
 
 namespace Sender.MidPoint
 {
+    /// <summary>
+    /// Authorization handler for MidPoint service
+    /// </summary>
     public class BasicAuthHandler(SenderConfigurationProvider configProvider) : IMidPointAuthHandler
     {
         public void Authenticate(HttpRequestMessage request)

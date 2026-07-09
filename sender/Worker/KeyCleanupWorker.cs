@@ -11,6 +11,9 @@ using Sender.State;
 
 namespace Sender.Worker;
 
+/// <summary>
+/// Worker responsible for cleaning expired (old) keys
+/// </summary>
 public class KeyCleanupWorker(
     SenderConfigurationProvider configuration,
     AppLogger appLogger,

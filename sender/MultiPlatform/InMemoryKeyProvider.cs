@@ -9,6 +9,10 @@ using Sender.Logger;
 
 namespace Sender.MultiPlatform;
 
+/// <summary>
+/// Key provider stored in memory that uses simple Dictionary under the hood
+/// Used during tests or local development
+/// </summary>
 public class InMemoryKeyProvider(AppLogger appLogger) : IKeyProvider
 {
     private readonly Dictionary<string, DateTime> _expiries = new();

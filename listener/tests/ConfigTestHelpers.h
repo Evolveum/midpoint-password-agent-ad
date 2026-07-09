@@ -14,8 +14,8 @@
 namespace ConfigTestHelpers {
 
 inline std::filesystem::path TempRootDir(const char *name) {
-  char tmp[MAX_PATH];
-  GetTempPathA(MAX_PATH, tmp);
+  std::string tmp(MAX_PATH, '\0');
+  tmp.resize(GetTempPathA(MAX_PATH, tmp.data()));
   return std::filesystem::path(tmp) / name;
 }
 
@@ -24,6 +24,26 @@ inline void WriteJson(const std::filesystem::path &path, const char *content) {
   f << content;
   f.flush();
 }
+
+// Writes `content` to a fresh temp file under a per-test subdirectory and
+// removes that subdirectory when the guard goes out of scope.
+struct TempFilterFile {
+  std::filesystem::path path;
+
+  TempFilterFile(const char *dirName, const char *content)
+      : path(TempRootDir(dirName) / "filter.txt") {
+    std::filesystem::create_directories(path.parent_path());
+    WriteJson(path, content);
+  }
+
+  TempFilterFile(const TempFilterFile &) = delete;
+  TempFilterFile &operator=(const TempFilterFile &) = delete;
+
+  ~TempFilterFile() {
+    std::error_code ec;
+    std::filesystem::remove_all(path.parent_path(), ec);
+  }
+};
 
 struct RegistryConfigScope {
   std::filesystem::path _rootPath;
@@ -46,14 +66,14 @@ struct RegistryConfigScope {
       return;
     }
 
-    char buf[MAX_PATH] = {};
+    std::string buf(MAX_PATH, '\0');
     DWORD size = MAX_PATH;
     if (DWORD type = REG_SZ;
         RegQueryValueExA(hKey, REG_VAL_ROOT_PATH, nullptr, &type,
-                         reinterpret_cast<LPBYTE>(buf),
+                         reinterpret_cast<LPBYTE>(buf.data()),
                          &size) == ERROR_SUCCESS) {
       hadPrevious = true;
-      previousValue = buf;
+      previousValue = buf.c_str(); // stop at the embedded null terminator
     }
 
     std::string rootStr = _rootPath.string();

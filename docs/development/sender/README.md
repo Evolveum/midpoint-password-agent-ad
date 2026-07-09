@@ -8,20 +8,10 @@ It runs on the same Domain Controller as the listener, polls the local queue dir
 
 ---
 
-## Source Files
-
-| File | Description |
-|---|---|
-| `Program.cs` | Bootstraps the .NET generic host and registers the service with the Windows Service Control Manager. |
-| `Worker.cs` | Background service entry point. Will contain queue polling and midPoint HTTP logic. |
-| `appsettings.json` | Runtime configuration (log levels, future: midPoint URL, queue path). |
-| `sender.csproj` | .NET 10 Worker SDK project. |
-
----
-
 ## Prerequisites
 
-- .NET SDK 10 — `brew install dotnet` (macOS) or [download](https://dotnet.microsoft.com/download)
+- .NET SDK 10 — [download](https://dotnet.microsoft.com/download)
+- just - command runner ([installation](https://just.systems/man/en/packages.html))
 
 ---
 
@@ -59,21 +49,9 @@ Mocked midpoint server is implemented using WireMock (.NET port) can be started 
 Sender application logs are divided into 2 categories:
 
 - Application state logs - Windows EventLog (can be traces with Event Viewer Windows app)
-- Application operations - stored in `.log` file path is defined [in](../../sender/Logger/AppLogger.cs). Logged with C# library `Serilog`
+- Application operations - stored in `sender.log` file path as `[APPROOT]/Logs/`. Logged with C# library `Serilog`
 
-Location of `.log` files is configurable with Windows registry value located in `"HKLM:SOFTWARE\\Evolveum\\MidPointPasswordAgent\\LogPath"`. Log files use size-based rotation: once a file reaches the configured size limit a new file is created. Old files beyond the configured retention count are deleted automatically. Both limits are configurable — see the `Configuration` section below.
-
----
-
-## Install as a Windows Service
-
-Make sure `sender.exe` is not in Shared directory inside virtualize. Ideally copy `sender.exe` to `C:\...` and then pass its path to `sender-create-service` just recipe
-
-```powershell
-just sender-publish <path>
-just sender-create-service <path_to_published_sender.exe_file>
-sc.exe start MidPointPasswordAgentSender
-```
+Log files use size-based rotation: once a file reaches the configured size limit a new file is created. Old files beyond the configured retention count are deleted automatically. Both limits are configurable — see the `Configuration` section below.
 
 ---
 
@@ -104,14 +82,10 @@ Sender module has to read content of `.event` files. So it needs to first parse 
 
 When a password change event cannot be delivered to midPoint, the sender retries using exponential backoff before permanently discarding the event.
 
-### Process
-
 1. Sender reads a `.event` file from the queue and attempts to send it to midPoint.
 2. On failure, the file is moved to the `failed/` directory and its metadata is updated with the new retry count and the scheduled time for the next attempt.
 3. On each poll cycle, files in `failed/` whose retry time has passed are moved back to `processing/` for another attempt.
 4. After `MaxRetryCount` failed attempts, the file is moved to `queue/dlq/` and an error is written to the Windows Event Log.
-
-### Retry delay
 
 Delay is calculated as `RetryBaseDelay × 2^(retryNumber − 1)`, capped at `RetryMaxDelay`.
 
@@ -125,8 +99,6 @@ With the default values (`RetryBaseDelay = 1 min`, `RetryMaxDelay = 1 h`):
 | 4     | 8 min  |
 | 5     | 16 min |
 | 6     | 60 min |
-
-### Event file format during retry
 
 After the first failure the `.event` file is rewritten as JSON with only the password field encrypted. All other fields are plaintext.
 
@@ -143,7 +115,7 @@ After the first failure the `.event` file is rewritten as JSON with only the pas
 }
 ```
 
-### Configuration
+This beviour can be configured in following way
 
 ```json
 {
@@ -158,6 +130,22 @@ After the first failure the `.event` file is rewritten as JSON with only the pas
 `MaxRetryCount` — number of retry attempts before the event is moved to the dead-letter queue.
 `RetryBaseDelay` — base delay for the first retry.
 `RetryMaxDelay` — maximum delay between retries.
+
+---
+
+## Burst load handling
+
+Mass events can drop a large number of `.event` files into the queue at the same time. Instead of sending them one at a time, the sender processes up to `MaxQueueDepth` events concurrently.
+
+```json
+{
+  "Sender": {
+    "MaxQueueDepth": 10
+  }
+}
+```
+
+`MaxQueueDepth` — maximum number of events processed concurrently. Default `10`.
 
 ---
 
@@ -197,7 +185,12 @@ Example of `config.json`
         "KeyCleanupInterval": "2.00:00:00",
         "LogLevel": "Information",
         "LogFileSizeLimitBytes": 5242880,
-        "LogRetainedFileCountLimit": 3
+        "LogRetainedFileCountLimit": 3,
+        "MaxRetryCount": 5,
+        "RetryBaseDelay": "00:01:00",
+        "RetryMaxDelay": "01:00:00",
+        "MaxRequestsPerMinute": 60,
+        "MaxQueueDepth": 10
     }
 }
 ```
@@ -208,5 +201,14 @@ Example of `config.json`
 `LogLevel` - Minimum log level written to the log file (`Verbose`, `Debug`, `Information`, `Warning`, `Error`, `Fatal`). Default: `Information`
 `LogFileSizeLimitBytes` - Maximum size of a single log file in bytes before it is rolled over and a new file is created. Default: `5242880` (5 MB)
 `LogRetainedFileCountLimit` - Maximum number of log files to keep on disk. When exceeded, the oldest file is deleted. Default: `3`
+`MaxRetryCount` — Number of retry attempts before the event is moved to the dead-letter queue.
+`RetryBaseDelay` — Base delay for the first retry. Default `00:01:00` (1 minute).
+`RetryMaxDelay` — Maximum delay between retries. Default `01:00:00` (1 hour).
+`MaxRequestsPerMinute` - Maximum number of send request to MidPoint per minute. Default `0` => no limitation
+`MaxQueueDepth` - Maximum number of password change events sent to MidPoint concurrently. Default: `10`
 
 To change configuration of MidPoint password, user needs to call script scripts/updateMidpointPassword.ps1 (will be part of installation folder). To avoid passing password as plaintext parameter, script expects interactive user input.
+
+
+## Performance testing
+For performance testing, we can use script `scripts/batchPasswordChangeTest.ps1`. Script generates multiple accounts (configurable number) in AD then changes password to each of them.

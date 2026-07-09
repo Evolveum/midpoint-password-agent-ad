@@ -7,6 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Sender.Queue
 {
+    /// <summary>
+    /// Class mapper of `.event` queue files
+    /// </summary>
     public record PasswordChangeEvent(string Username, string Domain, string Password)
     {
         [JsonConstructor]

@@ -7,7 +7,7 @@ check-installation:
 
 # Install listener .dll and sender.exe into windows system
 [windows]
-install: import-registers
+install:
   powershell.exe -ExecutionPolicy Bypass -File .\installation\Install.ps1 -DllPath .\listener\build\MidPointPasswordAgentListener.dll -SenderExePath .\sender\bin\Release\net10.0\win-x64\publish\sender.exe
 
 # Uninstall listener .dll and sender.exe from windows system
@@ -141,11 +141,6 @@ sender-publish:
 [group("sender")]
 sender-test:
   dotnet test sender.Tests --logger "console;verbosity=normal"
-
-# Create Windows Service for sender module with path to binary(.exe) file
-[windows, group("sender")]
-sender-create-service path='Z:\ad-midpoint-password-sync\sender\bin\Release\net10.0\win-x64\publish\sender.exe':
-  sc.exe create MidPointPasswordAgentSender binPath={{path}}
 
 # Run C# sender.exe application locally (sender.exe can be created with sender-publish recipe)
 [windows, group("sender")]

@@ -55,43 +55,17 @@ After you are in login screen it can be fairy difficult to add password. For Mac
 To run `.dll` inside Windows Server we need to create shared directory and than load this `.dll` from there inside Windows Server.
 Make sure that share directory has **read and write** permissions from windows side. Because building `.dll` inside Windows Server requires write operations.
 
-TODO: Document process of creating Shared Directory in UTM
-
+Creation process depends on virtualizer. But all commonly used support this feature.
 
 ## CMake
 
-Installation of CMake on Windows server ([v3.30.1](https://github.com/Kitware/CMake/releases/tag/v3.30.1)). Download `.msi` file and install. 
+Installation of CMake on Windows server ([v3.30.1](https://github.com/Kitware/CMake/releases/tag/v3.30.1)). Download `.msi` file and install. Or can be installed as a Visual studio build tools
 
 ## Visual Studio build tools
 
 Needed for CMake generator [link](https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-history#evergreen-bootstrappers)
 
-Check `Desktop development with C++` and make sure `C++ CMake tools for Windows` is selected and install.
-
-## Initialize MSVC build tools
-
-We need to initialize them before each run of `powershell`. Ideal case for creating `$PROFILE`. Check if file exists. If not create one.
-
-Check if exists
-```powershell
-Test-Path $PROFILE
-```
-
-Create file
-```powershell
-New-Item -ItemType File -Path $PROFILE -Force
-```
-
-Edit file and add initialization of MSVC
-```powershell
-notepad $PROFILE
-
-$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-$vsPath = (& $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath).Trim()
-Import-Module "$vsPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
-Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation -DevCmdArguments "-arch=x64"
-```
-> This can easily slow down initialization by 10+ seconds
+Check `Desktop development with C++` and make sure `C++ CMake tools for Windows` is selected and install (if not installed manualy).
 
 ## Install Choco (Win package manager)
 
@@ -124,5 +98,5 @@ Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile .\dotnet-instal
 
 Make sure to allow script to run a then check if dotnet is install with `dotnet --version`.
 
-Also download dotnet SDK from this (link)[https://dotnet.microsoft.com/en-us/download/dotnet?cid=getdotnetcorecli]
+Also download dotnet SDK 10 from this (link)[https://dotnet.microsoft.com/en-us/download/dotnet?cid=getdotnetcorecli]
 

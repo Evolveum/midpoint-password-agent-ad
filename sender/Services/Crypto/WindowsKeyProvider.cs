@@ -12,6 +12,9 @@ using Sender.Logger;
 
 namespace Sender.Crypto;
 
+/// <summary>
+/// Windows key provider that uses Windows registry under the hood
+/// </summary>
 [SupportedOSPlatform("windows")]
 public class WindowsKeyProvider(SenderConfigurationProvider configuration, AppLogger appLogger) : IKeyProvider
 {

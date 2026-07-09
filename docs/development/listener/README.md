@@ -4,7 +4,7 @@
 
 The MidPoint Password Agent for Active Directory Listener is a Windows LSA Password Notification Filter implemented as a native C++ DLL (`MidPointPasswordAgentListener.dll`). It is loaded directly into the `lsass.exe` process on every Active Directory Domain Controller where it is deployed.
 
-Its **sole responsibility** is to capture a cleartext password at the moment of change and persist it to a local filesystem queue as quickly as possible.
+Its **responsibility** is to capture a cleartext password at the moment of change and persist it to a local filesystem queue as quickly as possible.
 
 ---
 
@@ -26,20 +26,38 @@ The DLL exports three functions required by the LSA notification filter interfac
 
 ### Prerequisites
 
-- Visual Studio 2022 (or Build Tools) with the **Desktop development with C++** workload.
-- CMake ≥ 4.3.0
-- Windows SDK ≥ 10.0.20348 (Windows Server 2022 SDK).
-- `spdlog` C++ logging library
-- `vcpkg` C++ package manager (windows has included in Build Tools, mac has installation guide [here](../installation/mac.md#Install vcpkg))
-- `nlohmann-json` C++ json parsing library
+Windows specific:
+- Visual Studio 2022 with the **Desktop development with C++** installed with Build tools
+- Windows SDK ≥ 10.0.20348 (Windows Server 2022 SDK)
+
+General:
+- CMake ≥ 3.3.0 (or installed Desktop development with C++ build tools)
+- `vcpkg` C++ package manager (windows has included in Build Tools)
+- just - command runner ([installation](https://just.systems/man/en/packages.html))
+
+Linux / Mac:
+- `mingw-w64` ≥ 14.0.0 for cross-compilation
 
 ### Development
 
-Use `clangd` for intellisese. Use `compile_commands.json` to help analyze dependencies as `spdlog` with
+<!-- Use `clangd` for intellisese. Use `compile_commands.json` to help analyze dependencies as `spdlog` with -->
+<!---->
+<!-- ```bash -->
+<!-- just listener-ide -->
+<!-- ``` -->
 
+With installed prerequisites you can simply run following command to build Listener DLL
 ```bash
-just listener-ide
+just listener-build
 ```
+
+### Installation
+
+Can be done with installation powershell script [`Install-Listener.ps1`](../../deploy/Install-Listener.ps1). Or with `just install` command
+
+### Uninstallation
+
+Can be done with uninstallation powershell script [`Uninstall-Listener.ps1`](../../deploy/Uninstall-Listener.ps1). Or with `just uninstall` command
 
 ### Logging
 
@@ -52,10 +70,10 @@ Location of `.log` files is configurable with Windows registry value located in 
 
 ### File Queue
 
-Used as IPC(Inter process communication) between Listener and Sender modules. When listener receives password change it stores this event into file in configurable location from Windows registry located in `"HKLM:SOFTWARE\\Evolveum\\MidPointPasswordAgent\\QueuePath"`. Queue files have `.event` extension and content is JSON.
+Used as IPC(Inter process communication) between Listener and Sender modules. When listener receives password change it stores this event into file in `[APPROOT]/Data/Queue/`. Queue files have `.event` extension and content is JSON.
 
 ```json
-{ "username": <username>, "domain": <domain>, "password": <password> }
+{ "username": <username>, "domain": <domain>, "password": <encrypted_password> }
 ```
 
 ### File Encryption
@@ -78,23 +96,41 @@ Example of `config.json`
         "LogLevel": "info",
         "LogFileSizeLimitBytes": 532480,
         "LogRetainedFileCountLimit": 3,
+        "FilteringFilePath": "C:\\ProgramData\\MidPoint Password Agent for Active Directory\\Config\\filtering.txt",
+        "FilteringFileMode": "EXACT"
     }
 }
 ```
 
-`LogLevel` - Logging level [trace, debug, info, warn, err, critical, off]
-
+`LogLevel` - Logging level [trace, debug, info, warn, err, critical, off]. Defaults to `info`
 `LogFileSizeLimitBytes` - Max size of log file in bytes (5MB default)
-
 `LogRetainedFileCountLimit` - Max number or last log files to keep (3 default)
+`FilteringFilePath` - Path to the [account filtering](#account-filtering) file. Omit or leave empty to disable filtering (every account is synced).
+`FilteringFileMode` - How `FilteringFilePath` entries are interpreted: `EXACT` or `REGEX`. Defaults to `EXACT`.
 
+## Account Filtering
 
-## Installation
+Account filtering lets you **exclude** specific AD accounts from being synced to MidPoint, based on a plain text file (`FilteringFilePath`) with one entry per line
 
-Can be done with installation powershell script [`Install-Listener.ps1`](../../deploy/Install-Listener.ps1)
+- It is a **deny list**
+- If `FilteringFilePath` is empty, unset, or the file is missing/empty, **no accounts are filtered**
+- Matching is **case-sensitive**
+- Blank lines in file are ignored
 
----
+Two modes, controlled by `FilteringFileMode`:
 
-## Uninstallation
+- **`EXACT`** — each line is a literal account name, compared for an exact match
+  ```
+  jack
+  Administrator
+  ```
+- **`REGEX`** — each line is a regular expression, matched against the full account name (i.e. the whole name must match the pattern, not just part of it). Invalid patterns are logged and skipped rather than failing the whole file
+  ```
+  .*admin$
+  ```
 
-Can be done with uninstallation powershell script [`Uninstall-Listener.ps1`](../../deploy/Uninstall-Listener.ps1)
+Both `FilteringFilePath` and `FilteringFileMode` are **hot-reloaded**, no DLL reload or reboot required:
+
+- Editing the *contents* of the currently configured filtering file takes effect as soon as the file is saved
+- Editing `FilteringFilePath` or `FilteringFileMode` in `config.json` takes effect as soon as `config.json` is saved — the listener stops watching the old file (if any) and starts watching the new one
+

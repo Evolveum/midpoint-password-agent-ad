@@ -11,6 +11,9 @@ using Sender.State;
 
 namespace Sender.Worker;
 
+/// <summary>
+/// Worker responsible for rotating encryption keys inside Windows registry and marking old ones for cleanup
+/// </summary>
 public class KeyRotationWorker(
     SenderConfigurationProvider configuration,
     AppLogger appLogger,

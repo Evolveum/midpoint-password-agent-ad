@@ -11,6 +11,9 @@ using Sender.Exceptions;
 
 namespace Sender.WindowsRegistry
 {
+    /// <summary>
+    /// Actual Windows registry value provider
+    /// </summary>
     [SupportedOSPlatform("windows")]
     public class WindowsRegistryProvider() : IWindowsRegistryProvider
     {

@@ -41,6 +41,8 @@ add_executable(MidPointPasswordAgentListenerTests
     test_crypto_helper.cpp
     test_app_config.cpp
     test_config_watcher.cpp
+    test_account_filter.cpp
+    test_registry_provider.cpp
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/config/app_config.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/PasswordFilter.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/logger/logger.cpp"
@@ -48,6 +50,9 @@ add_executable(MidPointPasswordAgentListenerTests
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/queue/queue_writer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/crypto/crypto.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../src/config/config_watcher.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/config/file_watcher.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/filtering/account_filter.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/registry/registry_provider.cpp"
 )
 
 # Production headers (pch.h, Common.h, …) must resolve from src/

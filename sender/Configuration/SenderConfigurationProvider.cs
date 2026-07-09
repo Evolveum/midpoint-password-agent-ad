@@ -10,6 +10,10 @@ using Sender.Services.MidPoint;
 
 namespace Sender.Configuration;
 
+/// <summary>
+/// Class that is used for providing current version of SenderConfiguration
+/// Is mostly wrapper arround SenderConfiguration
+/// </summary>
 public class SenderConfigurationProvider
 {
     private volatile SenderConfiguration _current;
@@ -74,4 +78,5 @@ public class SenderConfigurationProvider
     public MidPointClientConfiguration MidPoint => _current.MidPoint;
 
     public int MaxRequestsPerMinute => _current.MaxRequestsPerMinute;
+    public int MaxQueueDepth => _current.MaxQueueDepth;
 }

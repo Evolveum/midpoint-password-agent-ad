@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+// Struct that represents content of `.event` queue file, with additional keyVersion field
 struct PasswordEvent {
     std::string username;
     std::string domain;

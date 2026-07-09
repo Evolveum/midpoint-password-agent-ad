@@ -11,6 +11,9 @@ using Serilog.Formatting;
 
 namespace Sender.Logger
 {
+    /// <summary>
+    /// Custom formatting logs into JSON
+    /// </summary>
     public class JsonLogFormatter : ITextFormatter
     {
         private static string ToShortLevel(LogEventLevel level) => level switch

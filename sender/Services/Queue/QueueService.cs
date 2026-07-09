@@ -10,6 +10,9 @@ using Sender.Logger;
 
 namespace Sender.Queue
 {
+    /// <summary>
+    /// Service responsible for handling shared queue with Listener module
+    /// </summary>
     public class QueueService
     {
 
@@ -34,7 +37,7 @@ namespace Sender.Queue
             Directory.CreateDirectory(configuration.DeadLetterQueueDirectory);
         }
 
-        public List<PasswordChangeEvent> GetPasswordChangeEvents()
+        public List<string> GetPasswordChangeEvents()
         {
             foreach (var eventFile in Directory.EnumerateFiles(configuration.QueueDirectory, $"*{Constants.Queue.FileExtension}"))
             {
@@ -62,21 +65,11 @@ namespace Sender.Queue
             var filesToProcess = Directory.EnumerateFiles(configuration.ProcessingQueueDirectory, $"*{Constants.Queue.FileExtension}").ToList();
             if (filesToProcess.Count == 0)
             {
-                return new List<PasswordChangeEvent>();
+                return [];
             }
 
             appLogger.ToFile($"Found {filesToProcess.Count} event file(s) to process");
-            List<PasswordChangeEvent> parsedEvents = new List<PasswordChangeEvent>();
-            foreach (var eventFile in filesToProcess)
-            {
-                var passwordEvent = ParseEventFile(eventFile);
-                if (passwordEvent is null) continue;
-
-                parsedEvents.Add(passwordEvent);
-                appLogger.ToFile($"Processed: {Path.GetFileName(eventFile)}");
-            }
-
-            return parsedEvents;
+            return filesToProcess;
         }
 
         public bool RemoveEvent(PasswordChangeEvent changeEvent)

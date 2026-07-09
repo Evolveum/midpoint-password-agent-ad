@@ -3,7 +3,6 @@
 Prerequisities:
 - Installed Windows Server
 
-
 Use Server Manager application in Windows Server to setup AD.
 
 1. Open Server Manager -> Dashboard

@@ -5,20 +5,19 @@
  */
 #include "password_event.h"
 #include "../Common.h"
-#include "../WindowsRegisterHelpers.h"
 #include "../crypto/crypto.h"
 #include "../logger/logger.h"
 #include "../pch.h"
+#include "../registry/registry_provider.h"
 
 PasswordEvent::PasswordEvent(const std::string& u, const std::string& d,
                              const std::string& plainPassword)
     : username(u), domain(d) {
-  keyVersion =
-      GetRegisterValue(ADPS_REG_KEY_CONFIG, REG_VAL_LATEST_KEY_PATH, "");
+  keyVersion = RegistryProvider::Instance().GetString(
+      ADPS_REG_KEY_CONFIG, REG_VAL_LATEST_KEY_PATH, "");
 
-  auto encryptedKey =
-      GetRegisterBinaryValue(ADPS_REG_KEY_CONFIG, keyVersion.c_str());
-  auto keyBytes = DPAPIUnprotect(encryptedKey);
+  auto keyBytes = RegistryProvider::Instance().GetProtectedBinary(
+      ADPS_REG_KEY_CONFIG, keyVersion);
 
   if (keyBytes.size() != Crypto::KEY_BYTES) {
     Logger::FileError(

@@ -9,6 +9,7 @@
 #include <string>
 #include <filesystem>
 
+// Wrapper around spdlog library for logging
 namespace Logger {
   
 static constexpr std::size_t MAX_FILE_SIZE =

@@ -8,6 +8,7 @@
 #include "pch.h"
 #include "Common.h"
 #include "PasswordFilterHelpers.h"
+#include "filtering/account_filter.h"
 #include "queue/queue_writer.h"
 #include "string_helper.h"
 #include <fmt/format.h>
@@ -48,9 +49,13 @@ static void HandlePasswordChange(PUNICODE_STRING UserName,
 
     Logger::FileInfo(fmt::format("PasswordChangeNotify: user={} domain={}", usernameUtf8, domainUtf8));
 
-    PasswordEvent event{usernameUtf8, domainUtf8, WideToUtf8(password)};
-    if (!FileQueue::Write(event)) {
-      Logger::EventError(L"MidPointPasswordAgentListener: failed to write event to queue.");
+    if (!AccountFiltering::IsAllowed(usernameUtf8)) {
+      Logger::FileInfo(fmt::format("PasswordChangeNotify: account '{}' is filtered out, skipping sync", usernameUtf8));
+    } else {
+      PasswordEvent event{usernameUtf8, domainUtf8, WideToUtf8(password)};
+      if (!FileQueue::Write(event)) {
+        Logger::EventError(L"MidPointPasswordAgentListener: failed to write event to queue.");
+      }
     }
   } else {
     Logger::EventError(L"MidPointPasswordAgentListener: memory allocation failed in "
@@ -68,12 +73,11 @@ static void HandlePasswordChange(PUNICODE_STRING UserName,
   }
 }
 
+// Entrance for LSA after user password change
 NTSTATUS NTAPI PasswordChangeNotify(PUNICODE_STRING UserName, ULONG RelativeId,
                                     PUNICODE_STRING NewPassword) {
   UNREFERENCED_PARAMETER(RelativeId);
 
-  // Wrap everything in SEH: a crash in this function would crash lsass.exe
-  // and trigger an immediate domain controller reboot.
   ADPL_TRY {
     HandlePasswordChange(UserName, NewPassword);
   }

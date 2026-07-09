@@ -5,6 +5,9 @@ using Sender.Queue;
 
 namespace Sender.State;
 
+/// <summary>
+/// Provider of application state that is stored inside `Data/state.json` file
+/// </summary>
 public class ApplicationStateProvider : IApplicationStateProvider
 {
     private readonly SemaphoreSlim _lock = new(1, 1);

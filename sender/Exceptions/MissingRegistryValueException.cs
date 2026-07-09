@@ -1,5 +1,8 @@
 namespace Sender.Exceptions
 {
+    /// <summary>
+    /// Custom exception used while missing required Windows registry value
+    /// </summary>
     public class MissingRegistryValueException : Exception
     {
         public string MissingKey { get; }

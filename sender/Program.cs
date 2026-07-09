@@ -83,7 +83,7 @@ static async Task StartServiceAsync(string[] args)
 
     var levelSwitch = new LoggingLevelSwitch(startupSenderConfig.LogLevel);
 
-    Logger CreateSerilogLogger(SenderJsonConfiguration config) =>
+    LoggerConfiguration BuildLoggerConfiguration(SenderJsonConfiguration config) =>
         new LoggerConfiguration()
             .MinimumLevel.ControlledBy(levelSwitch)
             .Enrich.FromLogContext()
@@ -107,10 +107,11 @@ static async Task StartServiceAsync(string[] args)
                     lc.Filter.ByIncludingOnly(e => e.Properties.ContainsKey("WriteToEventLog"))
                     .WriteTo.EventLog(Sender.Constants.Service.Name, manageEventSource: false);
                 }
-            })
-            .CreateLogger();
+            });
 
-    Log.Logger = CreateSerilogLogger(startupSenderConfig);
+    var reloadableLogger = new LoggerConfiguration().CreateBootstrapLogger();
+    Log.Logger = reloadableLogger;
+    reloadableLogger.Reload(_ => BuildLoggerConfiguration(startupSenderConfig));
 
     builder.Logging.ClearProviders();
     builder.Logging.AddSerilog();
@@ -148,26 +149,36 @@ static async Task StartServiceAsync(string[] args)
     using var debounceTimer = new Timer(
         _ =>
         {
-            var midPointCofigProvider = host.Services.GetRequiredService<IMidpointConfigurationBuilder>();
-            var newConfig = SenderConfigurationFactory.Build(
-                startupConfig.QueueDirectory,
-                startupConfig.RootPath,
-                builder.Configuration,
-                midPointCofigProvider,
-                appLogger);
-
-            levelSwitch.MinimumLevel = newConfig.LogLevel;
-
-            if (newConfig.LogFileSizeLimitBytes != configProvider.LogFileSizeLimitBytes ||
-                newConfig.LogRetainedFileCountLimit != configProvider.LogRetainedFileCountLimit)
+            try
             {
-                var oldLogger = Log.Logger;
-                Log.Logger = CreateSerilogLogger(newConfig);
-                (oldLogger as IDisposable)?.Dispose();
-            }
+                var midPointCofigProvider = host.Services.GetRequiredService<IMidpointConfigurationBuilder>();
+                var newConfig = SenderConfigurationFactory.Build(
+                    startupConfig.QueueDirectory,
+                    startupConfig.RootPath,
+                    builder.Configuration,
+                    midPointCofigProvider,
+                    appLogger);
 
-            if (configProvider.Update(newConfig))
-                appLogger.ToFile($"Configuration reloaded: KeyRotationInterval={configProvider.KeyRotationInterval}, KeyRotationGracePeriod={configProvider.KeyRotationGracePeriod}, KeyCleanupInterval={configProvider.KeyCleanupInterval}, LogLevel={levelSwitch.MinimumLevel}, LogFileSizeLimitBytes={newConfig.LogFileSizeLimitBytes}, LogRetainedFileCountLimit={newConfig.LogRetainedFileCountLimit}, Midpoint={configProvider.MidPoint.ToString()}");
+                levelSwitch.MinimumLevel = newConfig.LogLevel;
+
+                if (newConfig.LogFileSizeLimitBytes != configProvider.LogFileSizeLimitBytes ||
+                    newConfig.LogRetainedFileCountLimit != configProvider.LogRetainedFileCountLimit)
+                {
+                    reloadableLogger.Reload(_ => BuildLoggerConfiguration(newConfig));
+                }
+
+                var limiter = host.Services.GetRequiredService<MidPointRateLimiter>();
+
+                if (configProvider.Update(newConfig))
+                {
+                    appLogger.ToFile($"Configuration reloaded: KeyRotationInterval={configProvider.KeyRotationInterval}, KeyRotationGracePeriod={configProvider.KeyRotationGracePeriod}, KeyCleanupInterval={configProvider.KeyCleanupInterval}, LogLevel={levelSwitch.MinimumLevel}, LogFileSizeLimitBytes={newConfig.LogFileSizeLimitBytes}, LogRetainedFileCountLimit={newConfig.LogRetainedFileCountLimit}, Midpoint={configProvider.MidPoint.ToString()}");
+                    limiter.Update(configProvider);
+                }
+            }
+            catch (Exception ex)
+            {
+                appLogger.ToAll($"Unhandled error while reloading configuration: {ex}", LogLevel.Error);
+            }
         },
         null,
         Timeout.Infinite,

@@ -4,7 +4,6 @@
  * Licensed under the EUPL-1.2 or later.
  */
 
-using System.Security.Cryptography;
 using System.Text.Json;
 using Sender.Configuration;
 using Sender.Crypto;
@@ -13,6 +12,9 @@ using Sender.Queue;
 
 namespace Sender.KeyRotation;
 
+/// <summary>
+/// Service responsible for rotating keys (creating new or deleting old ones)
+/// </summary>
 public class KeyRotationService : IKeyRotationService
 {
     private readonly AppLogger appLogger;

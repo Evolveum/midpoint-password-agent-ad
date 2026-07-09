@@ -11,6 +11,7 @@
 
 void to_json(nlohmann::json& j, const PasswordEvent& e);
 
+// File queue utilities
 namespace FileQueue {
 
 void Init(const std::filesystem::path &queueDir);

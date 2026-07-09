@@ -5,6 +5,7 @@ using Sender.MidPoint;
 
 namespace Sender.Services.MidPoint
 {
+    // MidPoint Configuration builder
     public interface IMidpointConfigurationBuilder
     {
         MidPointClientConfiguration Build(MidPointJsonConfiguration jsonConfig);

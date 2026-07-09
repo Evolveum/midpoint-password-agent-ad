@@ -5,7 +5,6 @@
  */
 #include "logger.h"
 #include "../Common.h"
-#include "../WindowsRegisterHelpers.h"
 #include <fmt/format.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <filesystem>
@@ -19,7 +18,7 @@ void Init(const std::filesystem::path &logDirPath) {
     spdlog::set_default_logger(logger);
 
     std::string jsonpattern = {"{\"time\": \"%Y-%m-%dT%H:%M:%S.%f%z\", "
-                               "\"level\": \"%^%l%$\", \"message\": \"%v\"},"};
+                               "\"level\": \"%^%l%$\", \"message\": \"%v\"}"};
     spdlog::set_pattern(jsonpattern);
     spdlog::set_level(spdlog::level::info);
     spdlog::flush_on(spdlog::level::info);

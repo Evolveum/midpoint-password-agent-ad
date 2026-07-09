@@ -11,6 +11,9 @@ using Sender.Queue;
 
 namespace Sender.Crypto;
 
+/// <summary>
+/// Service responsible for decrypting and encrypting PasswordChangeEvent class (primary its `password` field)
+/// </summary>
 public class CryptoService(AppLogger appLogger, IKeyProvider keyProvider)
 {
     public PasswordChangeEvent DecryptPassword(PasswordChangeEvent changeEvent)

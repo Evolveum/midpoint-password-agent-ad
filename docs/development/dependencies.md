@@ -23,3 +23,9 @@ Generated from obj/project.assets.json.
 
 First need to call `dotnet restore`. Check if `obj\project.assets.json` was generated.
 Then execute `./nuget-tree.sh` 
+
+## Installer dependencies
+
+[Installer dependencies](../../dependencies.txt)
+
+Only installer dependency is for now Wix package

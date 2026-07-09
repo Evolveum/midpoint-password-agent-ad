@@ -13,6 +13,9 @@ using Sender.Queue;
 
 namespace Sender.MidPoint
 {
+    /// <summary>
+    /// Service responsible for handling communication with MidPoint
+    /// </summary>
     public class MidPointService(AppLogger appLogger, SenderConfigurationProvider configProvider, IMidPointAuthHandler authHandler) : IDisposable
     {
         private const string NotifyChangePath = "ws/rest/notifyChange";

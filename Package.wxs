@@ -5,7 +5,7 @@
 
   <Package Name="MidPoint Password Agent for Active Directory"
            Manufacturer="Evolveum"
-           Version="1.0.0"
+           Version="1.0.1"
            UpgradeCode="1409F233-A94A-4892-8DA5-50C03C5FB8F6"
            Scope="perMachine">
 
@@ -153,7 +153,7 @@
             <CreateFolder>
               <util:PermissionEx User="NT AUTHORITY\SYSTEM" GenericRead="yes" GenericWrite="yes" Delete="yes" />
               <util:PermissionEx User="NT SERVICE\MidPointPasswordAgentSender" GenericRead="yes" GenericWrite="yes" Delete="yes" />
-              <util:PermissionEx User="MidPoint Password Agent Managers" GenericRead="yes" GenericWrite="yes" />
+              <util:PermissionEx User="MidPoint Password Agent Managers" GenericRead="yes" Delete="yes" />
               <util:PermissionEx User="Administrators" GenericRead="yes" Synchronize="yes" />
             </CreateFolder>
           </Component>
@@ -268,6 +268,22 @@
                  Before="ConfigureApp"
                  Sequence="execute" />
     <CustomAction Id="ConfigureApp"
+                  DllEntry="WixQuietExec64"
+                  BinaryRef="Wix4UtilCA_X64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <!--
+      Step 2b: Strip inherited permissions on the registry keys too.
+      util:PermissionEx only adds an ACE, it doesn't break inheritance, so without this
+      BUILTIN\Administrators keeps FullControl inherited from HKLM\SOFTWARE.
+    -->
+    <SetProperty Id="ConfigureRegistryAcl"
+                 Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoP -ex Bypass -NonI -Command &quot;foreach($k in 'HKLM:\SOFTWARE\Evolveum\MidPointPasswordAgent','HKLM:\SOFTWARE\Evolveum\MidPointPasswordAgent\Keys'){$acl=New-Object System.Security.AccessControl.RegistrySecurity;$acl.SetAccessRuleProtection($true,$false);$acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule('NT AUTHORITY\SYSTEM','ReadKey,SetValue,CreateSubKey,Delete','ContainerInherit','None','Allow')));$acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule('NT SERVICE\MidPointPasswordAgentSender','ReadKey,SetValue,CreateSubKey','ContainerInherit','None','Allow')));if($k -eq 'HKLM:\SOFTWARE\Evolveum\MidPointPasswordAgent'){$acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule('MidPoint Password Agent Managers','ReadKey','None','None','Allow')))};Set-Acl -Path $k -AclObject $acl}&quot;"
+                 Before="ConfigureRegistryAcl"
+                 Sequence="execute" />
+    <CustomAction Id="ConfigureRegistryAcl"
                   DllEntry="WixQuietExec64"
                   BinaryRef="Wix4UtilCA_X64"
                   Execute="deferred"
@@ -420,7 +436,8 @@
 
     <InstallExecuteSequence>
       <Custom Action="ConfigureApp" After="InstallServices" Condition="NOT REMOVE" />
-      <Custom Action="WriteMidPointConfig" After="ConfigureApp" Condition="NOT REMOVE AND MIDPOINT_URL AND NOT WIX_UPGRADE_DETECTED" />
+      <Custom Action="ConfigureRegistryAcl" After="ConfigureApp" Condition="NOT REMOVE" />
+      <Custom Action="WriteMidPointConfig" After="ConfigureRegistryAcl" Condition="NOT REMOVE AND MIDPOINT_URL AND NOT WIX_UPGRADE_DETECTED" />
       <Custom Action="SetStorePasswordData" Before="StorePassword" Condition="NOT REMOVE AND MIDPOINT_PASSWORD AND NOT WIX_UPGRADE_DETECTED" />
       <Custom Action="StorePassword" After="WriteMidPointConfig" Condition="NOT REMOVE AND MIDPOINT_PASSWORD AND NOT WIX_UPGRADE_DETECTED" />
       <Custom Action="RunSenderInstall" After="StorePassword" Condition="NOT REMOVE" />

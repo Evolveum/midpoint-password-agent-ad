@@ -10,14 +10,30 @@
 #include <string>
 #include <filesystem>
 
+enum class FilteringFileMode {
+  EXACT,
+  REGEX,
+};
+
+inline std::string to_string(FilteringFileMode mode) {
+  switch (mode) {
+    case FilteringFileMode::EXACT: return "EXACT";
+    case FilteringFileMode::REGEX: return "REGEX";
+  }
+  return "UNKNOWN";
+}
+
 struct ListenerFileConfig {
     spdlog::level::level_enum logLevel = spdlog::level::info;
     std::size_t logMaxFileSize = Logger::MAX_FILE_SIZE;
     std::size_t logMaxFiles = Logger::MAX_FILES;
+    std::string filteringFilePath;
+    FilteringFileMode filteringFileMode = FilteringFileMode::EXACT;
 };
 
 void from_json(const nlohmann::json& j, ListenerFileConfig& c);
 
+// Holds Listener configuration from `config.json` file
 class AppConfig {
 public:
     AppConfig();
@@ -30,6 +46,9 @@ public:
     spdlog::level::level_enum logLevel = spdlog::level::info;
     std::size_t logMaxFileSize = Logger::MAX_FILE_SIZE;
     std::size_t logMaxFiles = Logger::MAX_FILES;
+
+    std::filesystem::path filteringFilePath;
+    FilteringFileMode filteringFileMode;
 
     bool operator==(const AppConfig& other) const;
     std::string ToString() const;

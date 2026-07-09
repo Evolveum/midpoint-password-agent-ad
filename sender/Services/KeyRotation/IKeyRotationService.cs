@@ -6,6 +6,7 @@
 
 namespace Sender.KeyRotation;
 
+// Interface for KeyRotation service
 public interface IKeyRotationService
 {
     Task CleanupExpiredKeysAsync();

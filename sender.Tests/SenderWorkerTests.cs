@@ -42,7 +42,8 @@ public class SenderWorkerTests : IDisposable
                .RespondWith(Response.Create().WithStatusCode(200));
 
         _configurationProvider = new SenderConfigurationProvider(
-            new SenderConfiguration {
+            new SenderConfiguration
+            {
                 QueueDirectory = _queueDir,
                 PollInterval = TimeSpan.FromMilliseconds(10),
                 KeyRegistryPath = $@"SOFTWARE\Evolveum\MidPointPasswordAgent\Keys\Tests\{Guid.NewGuid():N}",
@@ -92,7 +93,7 @@ public class SenderWorkerTests : IDisposable
 
     public SenderWorker CreateSenderWorker()
     {
-        return new SenderWorker(_appLogger, _configurationProvider, _queueService, _midPointService, _cryptoService, new MidPointRateLimiter(_configurationProvider));
+        return new SenderWorker(_appLogger, _configurationProvider, _queueService, _midPointService, _cryptoService, new MidPointRateLimiter(_configurationProvider, _appLogger));
     }
 
     private SenderWorker CreateWorkerWithMaxRetryCount(int maxRetryCount)
@@ -105,7 +106,7 @@ public class SenderWorkerTests : IDisposable
             MaxRetryCount = maxRetryCount
         });
         var qs = new QueueService(_appLogger, config);
-        return new SenderWorker(_appLogger, config, qs, _midPointService, _cryptoService, new MidPointRateLimiter(config));
+        return new SenderWorker(_appLogger, config, qs, _midPointService, _cryptoService, new MidPointRateLimiter(config, _appLogger));
     }
 
     private void SetupKeyRegistries()
@@ -345,7 +346,71 @@ public class SenderWorkerTests : IDisposable
                 MaxRequestsPerMinute = maxRequestsPerMinute,
             }
         );
-        return new SenderWorker(_appLogger, rateLimitedConfig, _queueService, _midPointService, _cryptoService, new MidPointRateLimiter(rateLimitedConfig));
+        return new SenderWorker(_appLogger,
+        rateLimitedConfig,
+        _queueService,
+        _midPointService,
+        _cryptoService,
+        new MidPointRateLimiter(rateLimitedConfig, _appLogger));
+    }
+
+    [Fact]
+    public async Task BurstEventsAreProcessedConcurrently()
+    {
+        _server.Reset();
+        _server.Given(Request.Create().WithPath(NotifyChangePath).UsingPost())
+               .RespondWith(Response.Create().WithStatusCode(200).WithDelay(TimeSpan.FromMilliseconds(300)));
+
+        const int eventCount = 10;
+        for (int i = 1; i <= eventCount; i++)
+        {
+            var changeEvent = new PasswordChangeEvent($"BurstUser{i}", "EvilCorp", "secret");
+            WriteEventFile(Path.Combine(_configurationProvider.QueueDirectory, $"burst{i}_{TestKeyVersion}.event"), changeEvent, "secret");
+        }
+
+        using var worker = CreateSenderWorkerWithQueueDepth(eventCount);
+        await RunWorkerBriefly(worker, TimeSpan.FromMilliseconds(1200));
+
+        Assert.Empty(Directory.GetFiles(_configurationProvider.QueueDirectory, "*.event"));
+        Assert.Empty(Directory.GetFiles(_configurationProvider.ProcessingQueueDirectory, "*.event"));
+        Assert.Empty(Directory.GetFiles(_configurationProvider.FailedQueueDirectory, "*.event"));
+    }
+
+    [Fact]
+    public async Task QueueDepthLimitsConcurrency()
+    {
+        _server.Reset();
+        _server.Given(Request.Create().WithPath(NotifyChangePath).UsingPost())
+               .RespondWith(Response.Create().WithStatusCode(200).WithDelay(TimeSpan.FromMilliseconds(300)));
+
+        const int eventCount = 6;
+        for (int i = 1; i <= eventCount; i++)
+        {
+            var changeEvent = new PasswordChangeEvent($"LimitedUser{i}", "EvilCorp", "secret");
+            WriteEventFile(Path.Combine(_configurationProvider.QueueDirectory, $"limited{i}_{TestKeyVersion}.event"), changeEvent, "secret");
+        }
+
+        using var worker = CreateSenderWorkerWithQueueDepth(1);
+        await RunWorkerBriefly(worker, TimeSpan.FromMilliseconds(900));
+
+        Assert.Empty(Directory.GetFiles(_configurationProvider.QueueDirectory, "*.event"));
+        var remaining = Directory.GetFiles(_configurationProvider.ProcessingQueueDirectory, "*.event").Length +
+                         Directory.GetFiles(_configurationProvider.FailedQueueDirectory, "*.event").Length;
+        Assert.True(remaining > 0, "With queue depth 1, not all events should have been sent yet");
+    }
+
+    private SenderWorker CreateSenderWorkerWithQueueDepth(int maxQueueDepth)
+    {
+        var config = new SenderConfigurationProvider(
+            new SenderConfiguration
+            {
+                QueueDirectory = _configurationProvider.QueueDirectory,
+                PollInterval = TimeSpan.FromMilliseconds(10),
+                MaxQueueDepth = maxQueueDepth,
+            }
+        );
+        var queueService = new QueueService(_appLogger, config);
+        return new SenderWorker(_appLogger, config, queueService, _midPointService, _cryptoService, new MidPointRateLimiter(config, _appLogger));
     }
 
 }

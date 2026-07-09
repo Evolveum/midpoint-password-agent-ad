@@ -5,7 +5,6 @@
  */
 #include "queue_writer.h"
 #include "../Common.h"
-#include "../WindowsRegisterHelpers.h"
 #include "../crypto/crypto.h"
 #include "../logger/logger.h"
 #include "../pch.h"
@@ -21,11 +20,21 @@
 #include <fmt/format.h>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
+#include <optional>
 #include <string>
 #include <vector>
 #include <filesystem>
 
-static const std::filesystem::path* queueDirPath = nullptr;
+namespace {
+
+// Function-local static instead of a namespace-scope global: same
+// process-lifetime storage, only reachable through this accessor.
+std::optional<std::filesystem::path>& QueueDirPath() {
+  static std::optional<std::filesystem::path> path;
+  return path;
+}
+
+} // namespace
 
 
 void to_json(nlohmann::json &j, const PasswordEvent &e) {
@@ -63,14 +72,13 @@ static bool EnsureDir(const std::wstring &path) {
 namespace FileQueue {
 
 void Init(const std::filesystem::path &queueDir) {
-  static const std::filesystem::path path = queueDir;
-  queueDirPath = &path;
-  EnsureDir(path.wstring());
-  EnsureDir((path / STAGING_FOLDER_NAME).wstring());
+  QueueDirPath() = queueDir;
+  EnsureDir(queueDir.wstring());
+  EnsureDir((queueDir / STAGING_FOLDER_NAME).wstring());
 }
 
 bool Write(const PasswordEvent& event) {
-  if (!queueDirPath) {
+  if (!QueueDirPath()) {
     Logger::FileError("Queue directory path variable is empty");
     return false;
   }
@@ -83,8 +91,8 @@ bool Write(const PasswordEvent& event) {
   std::string fileName = GenerateFileName(event.keyVersion);
   Logger::FileInfo(fmt::format("Generated new file name '{}'", fileName));
   std::filesystem::path fileNamePath(fileName);
-  std::filesystem::path stagingPath = *queueDirPath / STAGING_FOLDER_NAME / fileNamePath;
-  std::filesystem::path finalPath = *queueDirPath / fileNamePath;
+  std::filesystem::path stagingPath = *QueueDirPath() / STAGING_FOLDER_NAME / fileNamePath;
+  std::filesystem::path finalPath = *QueueDirPath() / fileNamePath;
 
   std::string payload = nlohmann::json(event).dump();
 

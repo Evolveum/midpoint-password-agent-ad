@@ -8,6 +8,10 @@ using Serilog.Events;
 
 namespace Sender.Configuration;
 
+/// <summary>
+/// Class that represents Sender configuration inside `config.json` file
+/// Is used for parsing
+/// </summary>
 public record class SenderJsonConfiguration
 {
     public TimeSpan KeyRotationInterval { get; set; } = TimeSpan.FromDays(20);
@@ -21,4 +25,5 @@ public record class SenderJsonConfiguration
     public int MaxRetryCount { get; set; } = 5;
     public TimeSpan RetryBaseDelay { get; set; } = TimeSpan.FromMinutes(1);
     public TimeSpan RetryMaxDelay { get; set; } = TimeSpan.FromHours(1);
+    public int MaxQueueDepth { get; set; } = 10;
 }

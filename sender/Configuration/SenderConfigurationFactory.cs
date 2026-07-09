@@ -10,6 +10,9 @@ using Sender.Services.MidPoint;
 
 namespace Sender.Configuration;
 
+/// <summary>
+/// Responsible for creating SenderConfiguration
+/// </summary>
 public static class SenderConfigurationFactory
 {
     public static SenderConfiguration Build(
@@ -19,9 +22,27 @@ public static class SenderConfigurationFactory
         IMidpointConfigurationBuilder midpointConfigBuilder,
         AppLogger appLogger)
     {
-        var jsonConfig = configuration.GetSection("Sender").Get<SenderJsonConfiguration>() ?? new SenderJsonConfiguration();
-        var midPointJsonConfig = configuration.GetSection("MidPoint").Get<MidPointJsonConfiguration>() ?? new MidPointJsonConfiguration();
+        SenderJsonConfiguration jsonConfig;
+        try
+        {
+            jsonConfig = configuration.GetSection("Sender").Get<SenderJsonConfiguration>() ?? new SenderJsonConfiguration();
+        }
+        catch (Exception e)
+        {
+            appLogger.ToAll(string.Format("Loading sender configuration failed, {0}", e.Message), LogLevel.Error);
+            jsonConfig = new SenderJsonConfiguration();
+        }
 
+        MidPointJsonConfiguration midPointJsonConfig;
+        try
+        {
+            midPointJsonConfig = configuration.GetSection("MidPoint").Get<MidPointJsonConfiguration>() ?? new MidPointJsonConfiguration();
+        }
+        catch (Exception e)
+        {
+            appLogger.ToAll(string.Format("Loading midpoint configuration failed, {0}", e.Message), LogLevel.Error);
+            midPointJsonConfig = new MidPointJsonConfiguration();
+        }
 
         MidPointClientConfiguration midPointConfig;
         try
@@ -44,6 +65,11 @@ public static class SenderConfigurationFactory
             LogLevel = jsonConfig.LogLevel,
             LogFileSizeLimitBytes = jsonConfig.LogFileSizeLimitBytes,
             LogRetainedFileCountLimit = jsonConfig.LogRetainedFileCountLimit,
+            MaxRequestsPerMinute = jsonConfig.MaxRequestsPerMinute,
+            MaxRetryCount = jsonConfig.MaxRetryCount,
+            RetryBaseDelay = jsonConfig.RetryBaseDelay,
+            RetryMaxDelay = jsonConfig.RetryMaxDelay,
+            MaxQueueDepth = jsonConfig.MaxQueueDepth,
             MidPoint = midPointConfig,
         };
     }

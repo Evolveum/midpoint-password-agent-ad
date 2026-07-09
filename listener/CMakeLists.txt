@@ -22,7 +22,10 @@ set(SOURCES
     src/queue/queue_writer.cpp
     src/crypto/crypto.cpp
     src/config/config_watcher.cpp
+    src/config/file_watcher.cpp
     src/config/app_config.cpp
+    src/filtering/account_filter.cpp
+    src/registry/registry_provider.cpp
 )
 
 set(HEADERS
@@ -33,8 +36,10 @@ set(HEADERS
     src/logger/logger.h
     src/queue/password_event.h
     src/queue/queue_writer.h
+    src/registry/registry_provider.h
     src/crypto/crypto.h
     src/config/config_watcher.h
+    src/config/file_watcher.h
 )
 
 add_library(MidPointPasswordAgentListener SHARED
