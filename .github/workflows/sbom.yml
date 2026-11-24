@@ -2,6 +2,8 @@ name: SBOM
 
 on:
   push:
+    branches:
+      - sbom
     tags:
       - 'v*'
   pull_request:
