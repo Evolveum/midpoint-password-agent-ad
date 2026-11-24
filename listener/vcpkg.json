@@ -1,6 +1,7 @@
 {
   "name": "adpasswordlistener",
   "version": "0.0.1",
+  "builtin-baseline": "8f57207a8a1b96a4a864e11f85d57b0a252b3ac3",
   "dependencies": [
     "spdlog",
     "nlohmann-json",

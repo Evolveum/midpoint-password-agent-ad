@@ -1,0 +1,114 @@
+name: SBOM
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'listener/vcpkg.json'
+      - '**/*.csproj'
+      - 'Installer.wixproj'
+      - 'scripts/sbom/**'
+      - '.github/workflows/sbom.yml'
+      - '.github/actions/sbom-tools/**'
+  workflow_dispatch:
+    inputs:
+      upload-to-dependency-track:
+        description: "Upload the resulting BOM to Dependency-Track"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # attach BOMs to the release
+
+jobs:
+  sbom:
+    name: Generate SBOM
+    runs-on: windows-2022
+    env:
+      # Single, predictable location for vcpkg's manifest install so that both
+      # the build and the SBOM step look at the same tree.
+      VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
+      VCPKG_TRIPLET: x64-windows-static
+      NUGET_GITHUB_USER: ${{ github.repository_owner }}
+      NUGET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup listener environment
+        uses: ./.github/actions/listener-preparation
+
+      - name: Setup SBOM tooling
+        uses: ./.github/actions/sbom-tools
+
+      # vcpkg only writes PURLs into its SPDX output in recent vcpkg-tool
+      # releases. The image-provided vcpkg can lag behind, so refresh it.
+      - name: Update vcpkg
+        shell: pwsh
+        run: |
+          $baseline = (Get-Content listener/vcpkg.json | ConvertFrom-Json).'builtin-baseline'
+          git -C $env:VCPKG_ROOT fetch origin $baseline
+          git -C $env:VCPKG_ROOT checkout $baseline
+          & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
+          & "$env:VCPKG_ROOT/vcpkg.exe" version
+
+      - name: Resolve C++ dependencies (vcpkg manifest install)
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_ROOT/vcpkg.exe" install `
+            --x-manifest-root=listener `
+            --x-install-root=$env:VCPKG_INSTALLED_DIR `
+            --triplet=$env:VCPKG_TRIPLET
+
+      - name: Determine version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = if ($env:GITHUB_REF -like 'refs/tags/v*') { $env:GITHUB_REF_NAME.TrimStart('v') } else { "0.0.0-$($env:GITHUB_SHA.Substring(0,7))" }
+          echo "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Generate SBOMs
+        shell: pwsh
+        run: just sbom version=${{ steps.ver.outputs.version }}
+
+      - name: Validate aggregate SBOM
+        shell: pwsh
+        run: |
+          cyclonedx validate --input-file sbom/midpoint-password-agent-ad.cdx.json `
+            --input-format json --fail-on-errors
+
+      # Fails the build if any component lacks a PURL - the property that makes
+      # the BOM actually usable in Dependency-Track.
+      - name: Assert PURL coverage
+        shell: pwsh
+        run: python scripts/sbom/check-purl-coverage.py sbom/midpoint-password-agent-ad.cdx.json
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom/*.cdx.json
+
+      - name: Attach SBOMs to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: sbom/*.cdx.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Publish to Dependency-Track
+#        if: startsWith(github.ref, 'refs/tags/') || inputs.upload-to-dependency-track
+#        uses: DependencyTrack/gh-upload-sbom@v3
+#        with:
+#          serverHostname: ${{ vars.DEPENDENCYTRACK_HOSTNAME }}
+#          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+#          projectName: midpoint-password-agent-ad
+#          projectVersion: ${{ steps.ver.outputs.version }}
+#          autoCreate: true
+#          bomFilename: sbom/midpoint-password-agent-ad.cdx.json

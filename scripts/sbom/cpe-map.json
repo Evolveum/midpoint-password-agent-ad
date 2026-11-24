@@ -1,0 +1,13 @@
+{
+  "_comment": [
+    "Port name -> CPE 2.3 template. '{version}' is substituted with the upstream port version.",
+    "PURLs of type 'pkg:vcpkg' are not yet a registered PURL type, so Dependency-Track's",
+    "OSS Index / OSV / Snyk analyzers cannot resolve them. The CPE below is what makes",
+    "Dependency-Track's *internal* analyzer match the component against its NVD mirror.",
+    "Verify every entry against https://nvd.nist.gov/products/cpe/search before adding it -",
+    "a wrong vendor slug produces silent false negatives.",
+    "Ports with no NVD CPE dictionary entry (fmt, cppcodec, catch2) are intentionally absent."
+  ],
+  "spdlog": "cpe:2.3:a:gabime:spdlog:{version}:*:*:*:*:*:*:*",
+  "nlohmann-json": "cpe:2.3:a:nlohmann:json:{version}:*:*:*:*:*:*:*"
+}

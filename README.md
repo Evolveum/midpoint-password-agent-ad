@@ -19,6 +19,7 @@ The solution runs on every Domain Controller and consists of two decoupled compo
 | [Administration](docs/administration/readme.md) | Installing, configuring, and operating the agent |
 | [Listener](docs/development/listener/README.md) | C++ LSA Password Notification Filter module docs |
 | [Sender](docs/development/sender/README.md) | C# Windows service module docs |
+| [SBOM](docs/development/sbom.md) | Generating the CycloneDX SBOM for the C++ and C# code  |
 
 ---
 

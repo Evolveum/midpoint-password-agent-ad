@@ -1,0 +1,37 @@
+name: "Setup SBOM tooling"
+description: "Installs the CycloneDX .NET tool and the CycloneDX CLI used for merging/validating BOMs"
+
+inputs:
+  cyclonedx-dotnet-version:
+    description: "Version of the CycloneDX dotnet global tool"
+    required: false
+    default: "6.2.0"
+  cyclonedx-cli-version:
+    description: "Version tag of CycloneDX/cyclonedx-cli to download"
+    required: false
+    default: "v0.33.1"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install CycloneDX dotnet tool
+      shell: pwsh
+      run: |
+        dotnet tool install --global CycloneDX --version ${{ inputs.cyclonedx-dotnet-version }}
+        echo "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+    - name: Install CycloneDX CLI
+      shell: pwsh
+      run: |
+        $dir = Join-Path $env:RUNNER_TEMP 'cyclonedx-cli'
+        New-Item -ItemType Directory -Force -Path $dir | Out-Null
+        $url = "https://github.com/CycloneDX/cyclonedx-cli/releases/download/${{ inputs.cyclonedx-cli-version }}/cyclonedx-win-x64.exe"
+        Invoke-WebRequest -Uri $url -OutFile (Join-Path $dir 'cyclonedx.exe')
+        echo $dir | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+    - name: Show tool versions
+      shell: pwsh
+      run: |
+        dotnet-CycloneDX --version
+        cyclonedx --version
+        python --version

@@ -53,6 +53,7 @@ listener-build:
     -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=$(pwd)/cmake/toolchain-mingw64.cmake \
     -DVCPKG_TARGET_TRIPLET=x64-mingw-static \
     -DVCPKG_APPLOCAL_DEPS=OFF \
+    -DVCPKG_INSTALLED_DIR=$(pwd)/vcpkg_installed \
     -DCMAKE_BUILD_TYPE=Release
   cmake --build listener/build
 
@@ -96,7 +97,7 @@ listener-clean:
 # Requires MSVC environment initialized in PowerShell (see $PROFILE setup in docs)
 [windows, group("listener")]
 listener-build:
-    cmake -B listener/build -S listener -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Release>:>$<$<CONFIG:Debug>:Debug>
+    cmake -B listener/build -S listener -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static "-DVCPKG_INSTALLED_DIR=$(Get-Location)/vcpkg_installed" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Release>:>$<$<CONFIG:Debug>:Debug>
     cmake --build listener/build --config Release
 
 # Run clang-tidy static analysis on all listener source files
@@ -164,3 +165,112 @@ server-mock *args:
 [windows, group("sender-dpapi")]
 sender-libs-build:
   dotnet publish sender.DPAPI -c Release -r win-x64 --self-contained true -p:Platform=AnyCPU
+
+
+############################################################################
+################################### SBOM ###################################
+############################################################################
+# Produces CycloneDX 1.6 BOMs in which every component carries a PURL, so the
+# result can be uploaded to DependencyTrack as-is.
+#   listener    -> pkg:vcpkg/...  (+ CPE from scripts/sbom/cpe-map.json)
+#   sender      -> pkg:nuget/...
+#   sender.DPAPI-> pkg:nuget/...
+# See docs/development/sbom.md
+
+# Version defaults to the current git tag (v1.0.1 -> 1.0.1); past a tag you get
+# e.g. 1.0.1-3-g0625730. Override explicitly with `just sbom version=1.2.3`.
+sbom_version   := replace_regex(trim(shell("git describe --tags --always --abbrev=7")), '^v', '')
+sbom_out       := "sbom"
+sbom_triplet   := if os() == "windows" { "x64-windows-static" } else { "x64-mingw-static" }
+sbom_installed := "vcpkg_installed"
+sbom_group     := "com.evolveum"
+sbom_product   := "midpoint-password-agent-ad"
+sbom_supplier  := "Evolveum s.r.o."
+
+# C++ listener: vcpkg SPDX -> CycloneDX (PURL + CPE)
+[group("sbom")]
+sbom-listener version=sbom_version:
+  vcpkg install --x-manifest-root=listener --x-install-root={{sbom_installed}} --triplet={{sbom_triplet}}
+  python scripts/sbom/vcpkg-cyclonedx.py \
+    --installed-dir {{sbom_installed}} \
+    --triplet {{sbom_triplet}} \
+    --cpe-map scripts/sbom/cpe-map.json \
+    --component-name MidPointPasswordAgentListener \
+    --component-version {{version}} \
+    --component-purl "pkg:generic/midpoint-password-agent-listener@{{version}}" \
+    --output {{sbom_out}}/listener.cdx.json
+  python scripts/sbom/set-root-purl.py {{sbom_out}}/listener.cdx.json \
+    --purl "pkg:generic/midpoint-password-agent-listener@{{version}}" \
+    --supplier "{{sbom_supplier}}" --author "Evolveum" \
+    --description "midPoint Password Agent for AD - C++ LSA password notification filter"
+
+# C# sender service
+[group("sbom")]
+sbom-sender version=sbom_version:
+  dotnet-CycloneDX sender/sender.csproj -o {{sbom_out}} -fn sender.cdx.json \
+    --output-format Json --spec-version 1.6 --exclude-dev --exclude-test-projects \
+    -tfm net10.0 -rt win-x64 \
+    --set-name sender --set-version {{version}} --set-type Application
+  python scripts/sbom/set-root-purl.py {{sbom_out}}/sender.cdx.json \
+    --purl "pkg:generic/midpoint-password-agent-sender@{{version}}" \
+    --supplier "{{sbom_supplier}}" --author "Evolveum" \
+    --description "midPoint Password Agent for AD - C# Windows service"
+
+# C# installer custom actions (net48)
+[group("sbom")]
+sbom-sender-dpapi version=sbom_version:
+  dotnet-CycloneDX sender.DPAPI/sender.DPAPI.csproj -o {{sbom_out}} -fn sender.DPAPI.cdx.json \
+    --output-format Json --spec-version 1.6 --exclude-dev --exclude-test-projects \
+    -tfm net48 \
+    --set-name sender.DPAPI --set-version {{version}} --set-type Library
+  python scripts/sbom/set-root-purl.py {{sbom_out}}/sender.DPAPI.cdx.json \
+    --purl "pkg:generic/midpoint-password-agent-sender-dpapi@{{version}}" \
+    --supplier "{{sbom_supplier}}" --author "Evolveum" \
+    --description "midPoint Password Agent for AD - WiX DTF custom actions"
+
+# WiX installer toolchain (requires access to the GitHub NuGet feed)
+[windows, group("sbom")]
+sbom-installer version=sbom_version:
+  dotnet-CycloneDX Installer.wixproj -o {{sbom_out}} -fn installer.cdx.json \
+    --output-format Json --spec-version 1.6 --exclude-dev \
+    --set-name Installer --set-version {{version}} --set-type Application
+  python scripts/sbom/set-root-purl.py {{sbom_out}}/installer.cdx.json \
+    --purl "pkg:generic/midpoint-password-agent-installer@{{version}}" \
+    --supplier "{{sbom_supplier}}" --author "Evolveum" \
+    --description "midPoint Password Agent for AD - WiX installer"
+
+# Everything, merged into one hierarchical product BOM
+[group("sbom")]
+sbom version=sbom_version: (sbom-listener version) (sbom-sender version) (sbom-sender-dpapi version)
+  cyclonedx merge \
+    --input-files {{sbom_out}}/listener.cdx.json {{sbom_out}}/sender.cdx.json {{sbom_out}}/sender.DPAPI.cdx.json \
+    --input-format json --output-format json --output-version v1_6 --hierarchical \
+    --group {{sbom_group}} --name {{sbom_product}} --version {{version}} \
+    --output-file {{sbom_out}}/{{sbom_product}}.cdx.json
+  python scripts/sbom/set-root-purl.py {{sbom_out}}/{{sbom_product}}.cdx.json \
+    --purl "pkg:generic/{{sbom_product}}@{{version}}" \
+    --supplier "{{sbom_supplier}}" --author "Evolveum" \
+    --description "midPoint Password Agent for Active Directory"
+  cyclonedx validate --input-file {{sbom_out}}/{{sbom_product}}.cdx.json --input-format json --fail-on-errors
+  python scripts/sbom/check-purl-coverage.py {{sbom_out}}/{{sbom_product}}.cdx.json --warn-missing-cpe
+
+# Refresh the human-readable dependency lists from the generated BOMs
+[group("sbom")]
+sbom-deps-txt:
+  python scripts/sbom/bom-to-dependencies-txt.py {{sbom_out}}/listener.cdx.json --output listener/dependencies.txt
+  python scripts/sbom/bom-to-dependencies-txt.py {{sbom_out}}/sender.cdx.json {{sbom_out}}/sender.DPAPI.cdx.json --output dependencies.txt
+
+# Push the aggregate BOM to DependencyTrack
+# Requires DTRACK_URL and DTRACK_API_KEY in the environment.
+[group("sbom")]
+sbom-upload version=sbom_version:
+  curl -X POST "$DTRACK_URL/api/v1/bom" \
+    -H "X-Api-Key: $DTRACK_API_KEY" \
+    -F "autoCreate=true" \
+    -F "projectName={{sbom_product}}" \
+    -F "projectVersion={{version}}" \
+    -F "bom=@{{sbom_out}}/{{sbom_product}}.cdx.json"
+
+[group("sbom")]
+sbom-clean:
+  python -c "import shutil,pathlib; shutil.rmtree('{{sbom_out}}', ignore_errors=True)"
