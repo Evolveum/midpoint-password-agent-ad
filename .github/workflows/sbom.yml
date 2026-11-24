@@ -25,6 +25,7 @@ on:
 
 permissions:
   contents: write   # attach BOMs to the release
+  packages: read    # restore from the GitHub NuGet feed in nuget.config
 
 jobs:
   sbom:
@@ -76,7 +77,7 @@ jobs:
 
       - name: Generate SBOMs
         shell: pwsh
-        run: just sbom version=${{ steps.ver.outputs.version }}
+        run: just sbom ${{ steps.ver.outputs.version }}
 
       - name: Validate aggregate SBOM
         shell: pwsh

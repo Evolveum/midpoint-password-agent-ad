@@ -29,7 +29,7 @@ Then:
 
 ```powershell
 just sbom                          # generates everything + merges + validates
-just sbom version=1.0.1            # ... with an explicit version
+just sbom 1.0.1                    # ... with an explicit version (positional)
 just sbom-listener                 # C++ only
 just sbom-sender                   # C# service only
 just sbom-deps-txt                 # refresh the human-readable dependencies.txt files

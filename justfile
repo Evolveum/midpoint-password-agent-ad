@@ -178,8 +178,11 @@ sender-libs-build:
 # See docs/development/sbom.md
 
 # Version defaults to the current git tag (v1.0.1 -> 1.0.1); past a tag you get
-# e.g. 1.0.1-3-g0625730. Override explicitly with `just sbom version=1.2.3`.
-sbom_version   := replace_regex(trim(shell("git describe --tags --always --abbrev=7")), '^v', '')
+# e.g. 1.0.1-3-g0625730. Override positionally: `just sbom 1.2.3`.
+# Backticks, not shell(): shell() passes the command to the shell twice (as the
+# script and as $0), and powershell -Command concatenates both copies, so git
+# receives "git" as an extra revision argument.
+sbom_version   := replace_regex(trim(`git describe --tags --always --abbrev=7`), '^v', '')
 sbom_out       := "sbom"
 sbom_triplet   := if os() == "windows" { "x64-windows-static" } else { "x64-mingw-static" }
 sbom_installed := "vcpkg_installed"
