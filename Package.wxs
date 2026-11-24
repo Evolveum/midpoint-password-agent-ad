@@ -5,7 +5,7 @@
 
   <Package Name="MidPoint Password Agent for Active Directory"
            Manufacturer="Evolveum"
-           Version="1.0.1"
+           Version="1.0.2"
            UpgradeCode="1409F233-A94A-4892-8DA5-50C03C5FB8F6"
            Scope="perMachine">
 

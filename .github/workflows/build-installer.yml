@@ -14,8 +14,8 @@ jobs:
       contents: write # because of releasing the MSI
       packages: read
     env:
-      NUGET_GITHUB_USER: ${{ vars.NUGET_GITHUB_USER }}
-      NUGET_GITHUB_TOKEN: ${{ secrets.NUGET_GITHUB_TOKEN }}
+      NUGET_GITHUB_USER: ${{ github.repository_owner }}
+      NUGET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
